@@ -19,6 +19,7 @@
   - [Prompt 1 — Generate PROMPTS.md Session Log](#prompt-1--generate-promptsmd-session-log)
   - [Prompt 2 — Hackathon Problem Statement & Architecture Planning](#prompt-2--hackathon-problem-statement--architecture-planning)
   - [Prompt 3 — Start Website and Backend Implementation (v1.0)](#prompt-3--start-website-and-backend-implementation-v10)
+  - [Prompt 4 — Connect Live Groq LLM API & Resolve Hardcoded Fallback](#prompt-4--connect-live-groq-llm-api--resolve-hardcoded-fallback)
 
 ---
 
@@ -29,7 +30,7 @@
 | **Project**        | prem-AI-interviewer                            |
 | **Hackathon**      | Vibecodathon                                   |
 | **Session Date**   | 2026-08-07                                     |
-| **Total Prompts**  | 3 *(updated as session progresses)*            |
+| **Total Prompts**  | 4 *(updated as session progresses)*            |
 | **AI Model**       | Gemini 3.6 Flash (High) via Antigravity         |
 | **Workspace**      | `d:\vibecodathon`                              |
 
@@ -156,8 +157,37 @@ INIT → GREETING → Q1 → EVAL → [FOLLOW_UP | NEXT_TOPIC] → ... → MIN_8
 
 ---
 
+---
+
+---
+
+### Prompt 4 — Connect Live Groq LLM API & Resolve Hardcoded Fallback
+
+**🕐 Timestamp:** 2026-08-08 00:08 IST
+
+**👤 User Prompt:**
+> iam only getting hardcoded answer why is backend not connected to api
+
+**🤖 AI Root Cause Analysis & Fix:**
+
+**Root Causes Found:**
+1. `langchain-groq` package was not installed in the active Python environment.
+2. `load_dotenv()` was looking for `.env` only in the current working directory (`d:\vibecodathon\.env`), failing to discover `backend/.env`.
+3. OpenAI API key in `backend/.env` had exhausted quota (`429 - credit_balance_exhausted`).
+
+**Fixes Applied:**
+- Installed `langchain-groq`, `langchain-openai`, `groq`, `openai` packages in the Python environment.
+- Updated `backend/agent/interview_agent.py` `load_dotenv()` logic to automatically check `backend/.env`, root `.env`, and relative paths.
+- Verified connection to **Groq (`llama-3.3-70b-versatile`)**, which is now **100% ACTIVE and generating live adaptive interview questions**.
+
+**📁 Files Modified:**
+- [`backend/agent/interview_agent.py`](file:///d:/vibecodathon/backend/agent/interview_agent.py) — Enhanced `.env` resolution & Groq LLM initialization logging.
+- [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 4 session log.
+
+---
+
 <!-- NEW PROMPTS WILL BE APPENDED BELOW THIS LINE -->
 
 ---
 
-*Last updated: 2026-08-07 23:34 IST · Total prompts: 3*
+*Last updated: 2026-08-08 00:12 IST · Total prompts: 4*

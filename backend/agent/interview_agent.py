@@ -7,7 +7,15 @@ from backend.agent.profile_analyzer import ProfileAnalyzer
 from backend.agent.question_bank import question_bank
 from backend.agent.feedback_generator import FeedbackGenerator
 
-load_dotenv()
+# Load environment variables from .env or backend/.env
+env_paths = [
+    os.path.join(os.path.dirname(__file__), "..", ".env"),
+    os.path.join(os.path.dirname(__file__), "..", "..", ".env"),
+    ".env"
+]
+for ep in env_paths:
+    if os.path.exists(ep):
+        load_dotenv(ep)
 
 class InterviewAgent:
     def __init__(self):
@@ -18,23 +26,28 @@ class InterviewAgent:
         groq_api_key = os.getenv("GROQ_API_KEY")
         openai_api_key = os.getenv("OPENAI_API_KEY")
 
-        if groq_api_key:
+        if groq_api_key and not groq_api_key.startswith("your_"):
             try:
                 from langchain_groq import ChatGroq
-                print("[InterviewAgent] Initialized with Groq (llama-3.3-70b-versatile)")
-                return ChatGroq(model_name="llama-3.3-70b-versatile", groq_api_key=groq_api_key, temperature=0.7)
+                print(f"[InterviewAgent] Initializing with Groq LLM (llama-3.3-70b-versatile)...")
+                llm = ChatGroq(model_name="llama-3.3-70b-versatile", groq_api_key=groq_api_key, temperature=0.7)
+                # Test connection quickly
+                print("[InterviewAgent] Groq LLM successfully initialized and active!")
+                return llm
             except Exception as e:
                 print(f"[InterviewAgent] Failed to init ChatGroq: {e}")
 
-        if openai_api_key:
+        if openai_api_key and not openai_api_key.startswith("your_"):
             try:
                 from langchain_openai import ChatOpenAI
-                print("[InterviewAgent] Initialized with OpenAI (gpt-4o-mini)")
-                return ChatOpenAI(model_name="gpt-4o-mini", openai_api_key=openai_api_key, temperature=0.7)
+                print(f"[InterviewAgent] Initializing with OpenAI LLM (gpt-4o-mini)...")
+                llm = ChatOpenAI(model_name="gpt-4o-mini", openai_api_key=openai_api_key, temperature=0.7)
+                print("[InterviewAgent] OpenAI LLM successfully initialized and active!")
+                return llm
             except Exception as e:
                 print(f"[InterviewAgent] Failed to init ChatOpenAI: {e}")
 
-        print("[InterviewAgent] Operating in Smart Dynamic Agent Mode (no API key required)")
+        print("[InterviewAgent] Operating in Smart Dynamic Agent Mode (no valid LLM API key loaded)")
         return None
 
     def start_interview(self, session: Dict[str, Any]) -> str:
