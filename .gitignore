@@ -1,0 +1,77 @@
+# ===========================================
+# prem-AI-interviewer — .gitignore
+# ===========================================
+
+# ── Node / Frontend ──────────────────────
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/build/
+*.lock
+# Keep package-lock.json for reproducibility
+!package-lock.json
+!frontend/package-lock.json
+
+# ── Python / Backend ─────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.env
+
+# Python packaging
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ── Environment & Secrets ─────────────────
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets/
+
+# ── IDE & Editor ──────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ── Logs & Cache ──────────────────────────
+*.log
+logs/
+*.cache
+.cache/
+uvicorn.log
+npm-debug.log*
+yarn-debug.log*
+
+# ── Testing ───────────────────────────────
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+*.cover
+
+# ── OS ────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
