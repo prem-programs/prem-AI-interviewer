@@ -370,8 +370,8 @@ CRITICAL PERSONA & FORMATTING RULES:
 
             topics_count = len(session["topicsCovered"])
 
-            # Check completion condition: >= 5 main questions asked OR finished topics
-            if main_q_count > 5 or topics_count >= len(modules):
+            # Check completion condition: >= 8 main questions asked OR finished topics
+            if main_q_count > 8 or topics_count >= len(modules):
                 session["done"] = True
                 feedback = FeedbackGenerator.generate_feedback(session, llm=self.llm)
                 session["feedback"] = feedback
@@ -395,7 +395,7 @@ The candidate asked to SKIP the previous question.
 
 Current Interview State:
 - Candidate: {name} ({job_role}, Tier: {depth_tier})
-- Next Question Number: {main_q_count} of 5
+- Next Question Number: {main_q_count} of 8
 - Next Module: Module {mod_num} - {mod_title}
 
 Instructions:
@@ -502,8 +502,8 @@ Instructions:
 
         topics_count = len(session["topicsCovered"])
 
-        # Check completion condition: >= 5 main questions asked OR finished topics
-        if main_q_count > 5 or topics_count >= len(modules):
+        # Check completion condition: >= 8 main questions asked OR finished topics
+        if main_q_count > 8 or topics_count >= len(modules):
             session["done"] = True
             feedback = FeedbackGenerator.generate_feedback(session, llm=self.llm)
             session["feedback"] = feedback
@@ -525,6 +525,7 @@ Instructions:
 You are a warm, human AI Lead conducting a technical interview with candidate {name} ({job_role}, Tier: {depth_tier}).
 
 Current State:
+- Question Number: {main_q_count} of 8
 - Topic: Module {mod_num} - {mod_title}
 - Candidate Answer: "{user_message}"
 

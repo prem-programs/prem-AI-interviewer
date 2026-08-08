@@ -150,7 +150,7 @@ export default function VoiceInterviewChat({
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-              Question <strong style={{ color: 'var(--primary)' }}>{currentMainQ}/5</strong>
+              Question <strong style={{ color: 'var(--primary)' }}>{currentMainQ}/8</strong>
             </span>
             {meta?.depthTier && (
               <span style={{
