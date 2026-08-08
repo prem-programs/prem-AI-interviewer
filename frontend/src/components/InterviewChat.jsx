@@ -4,6 +4,7 @@ import MessageBubble from './MessageBubble';
 import VoiceModeToggle from './VoiceModeToggle';
 import VoiceSetup from './VoiceSetup';
 import VoiceInterviewChat from './VoiceInterviewChat';
+import { API_BASE_URL } from '../config';
 
 export default function InterviewChat({ candidate, onBackToCandidates, onInterviewFinished }) {
   const [messages, setMessages] = useState([]);
@@ -33,7 +34,7 @@ export default function InterviewChat({ candidate, onBackToCandidates, onIntervi
   // Initial Start Interview API call
   useEffect(() => {
     setLoading(true);
-    fetch('/api/interview', {
+    fetch(`${API_BASE_URL}/api/interview`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -65,7 +66,7 @@ export default function InterviewChat({ candidate, onBackToCandidates, onIntervi
     setMessages(newMessages);
     setLoading(true);
 
-    fetch('/api/interview', {
+    fetch(`${API_BASE_URL}/api/interview`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

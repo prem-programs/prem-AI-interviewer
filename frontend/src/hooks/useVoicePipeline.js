@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { API_BASE_URL } from '../config';
 
 export const POCKET_TTS_VOICES = [
   { id: 'alba', name: 'Alba (Female - Standard)' },
@@ -96,7 +97,7 @@ export function useVoicePipeline({ onTranscriptFinal, initialVoice = 'alba' }) {
       const formData = new FormData();
       formData.append('file', blob, 'recording.webm');
 
-      const res = await fetch('/api/voice/transcribe', {
+      const res = await fetch(`${API_BASE_URL}/api/voice/transcribe`, {
         method: 'POST',
         body: formData
       });
@@ -238,7 +239,7 @@ export function useVoicePipeline({ onTranscriptFinal, initialVoice = 'alba' }) {
     // Helper to fetch WAV audio for a text chunk
     const fetchChunkAudio = async (chunkText) => {
       try {
-        const res = await fetch('/api/voice/synthesize', {
+        const res = await fetch(`${API_BASE_URL}/api/voice/synthesize`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: chunkText, voice })

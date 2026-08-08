@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { User, Award, CheckCircle, Flame, Briefcase, GraduationCap } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 export default function CandidateSelector({ onSelectCandidate }) {
   const [candidates, setCandidates] = useState([]);
@@ -9,7 +10,7 @@ export default function CandidateSelector({ onSelectCandidate }) {
   const [roleFilter, setRoleFilter] = useState('ALL');
 
   useEffect(() => {
-    fetch('/api/candidates')
+    fetch(`${API_BASE_URL}/api/candidates`)
       .then((res) => {
         if (!res.ok) throw new Error('Failed to load candidates');
         return res.json();

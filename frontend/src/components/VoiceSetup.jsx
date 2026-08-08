@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Mic, CheckCircle2, AlertTriangle, Play, X, Sparkles, Volume2 } from 'lucide-react';
 import { POCKET_TTS_VOICES } from '../hooks/useVoicePipeline';
+import { API_BASE_URL } from '../config';
 
 export default function VoiceSetup({ isOpen, onClose, onConfirm }) {
   const [previewing, setPreviewing] = useState(false);
@@ -13,7 +14,7 @@ export default function VoiceSetup({ isOpen, onClose, onConfirm }) {
   const handlePreview = async () => {
     setPreviewing(true);
     try {
-      const res = await fetch('/api/voice/synthesize', {
+      const res = await fetch(`${API_BASE_URL}/api/voice/synthesize`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
