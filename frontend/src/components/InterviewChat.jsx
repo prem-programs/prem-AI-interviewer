@@ -1,6 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Send, Bot, User, Flag, Sparkles, CheckCircle2, ChevronLeft } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Send, Bot, User, Flag, Sparkles, CheckCircle2, ChevronLeft, SkipForward } from 'lucide-react';
 import MessageBubble from './MessageBubble';
+import VoiceModeToggle from './VoiceModeToggle';
+import VoiceSetup from './VoiceSetup';
+import VoiceInterviewChat from './VoiceInterviewChat';
 
 export default function InterviewChat({ candidate, onBackToCandidates, onInterviewFinished }) {
   const [messages, setMessages] = useState([]);
@@ -12,6 +15,10 @@ export default function InterviewChat({ candidate, onBackToCandidates, onIntervi
     depthTier: 'Intermediate',
     topicsCovered: []
   });
+
+  const [voiceMode, setVoiceMode] = useState(false);
+  const [showVoiceSetup, setShowVoiceSetup] = useState(false);
+  const [selectedVoice, setSelectedVoice] = useState('alba');
 
   const chatEndRef = useRef(null);
 
@@ -50,14 +57,10 @@ export default function InterviewChat({ candidate, onBackToCandidates, onIntervi
       });
   }, [candidate, sessionId]);
 
-  const handleSendMessage = (e) => {
-    e?.preventDefault();
-    if (!inputMessage.trim() || loading) return;
+  // useCallback so VoiceInterviewChat gets a stable onSendMessage reference
+  const sendTextTurn = useCallback((userText) => {
+    if (!userText || !userText.trim() || loading) return;
 
-    const userText = inputMessage;
-    setInputMessage('');
-    
-    // Optimistically append user message
     const newMessages = [...messages, { role: 'user', content: userText }];
     setMessages(newMessages);
     setLoading(true);
@@ -67,31 +70,62 @@ export default function InterviewChat({ candidate, onBackToCandidates, onIntervi
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         sessionId,
-        message: userText
+        message: userText,
+        voice_mode: voiceMode
       })
     })
       .then((res) => res.json())
       .then((data) => {
         setLoading(false);
         if (data.reply) {
-          setMessages([...newMessages, { role: 'assistant', content: data.reply }]);
+          setMessages([
+            ...newMessages,
+            {
+              role: 'assistant',
+              content: data.reply,
+              isFollowUp: data.isFollowUp || data.meta?.isFollowUp,
+              evaluationScore: data.evaluationScore || data.meta?.evaluationScore
+            }
+          ]);
         }
-        if (data.meta) {
-          setMeta(data.meta);
-        }
-        if (data.done && data.feedback) {
-          onInterviewFinished(data.feedback);
-        }
+        if (data.meta) setMeta(data.meta);
+        if (data.done && data.feedback) onInterviewFinished(data.feedback);
       })
       .catch((err) => {
         console.error('Error sending message:', err);
         setLoading(false);
       });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionId, voiceMode, loading]);
+
+  const handleSendMessage = (e) => {
+    e?.preventDefault();
+    if (!inputMessage.trim() || loading) return;
+    const text = inputMessage;
+    setInputMessage('');
+    sendTextTurn(text);
+  };
+
+  const handleSkipQuestion = () => {
+    sendTextTurn('Skip question');
+  };
+
+  const handleToggleVoiceMode = () => {
+    if (!voiceMode) {
+      setShowVoiceSetup(true);
+    } else {
+      setVoiceMode(false);
+    }
+  };
+
+  const handleConfirmVoiceSetup = (voiceId) => {
+    if (voiceId) setSelectedVoice(voiceId);
+    setShowVoiceSetup(false);
+    setVoiceMode(true);
   };
 
   const handleWrapUp = () => {
-    setInputMessage('Please finish interview and generate final feedback summary.');
-    handleSendMessage();
+    sendTextTurn('Please finish interview and generate final feedback summary.');
   };
 
   const getTierClass = (tier) => {
@@ -100,8 +134,45 @@ export default function InterviewChat({ candidate, onBackToCandidates, onIntervi
     return 'tier-beginner';
   };
 
+  const currentMainQ = meta.mainQuestionCount || 1;
+
+  if (voiceMode) {
+    return (
+      <>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0.75rem' }}>
+          <VoiceModeToggle voiceMode={voiceMode} onToggle={handleToggleVoiceMode} />
+        </div>
+        <VoiceInterviewChat
+          candidate={candidate}
+          sessionId={sessionId}
+          messages={messages}
+          loading={loading}
+          meta={meta}
+          selectedVoice={selectedVoice}
+          onSendMessage={sendTextTurn}
+          onBackToCandidates={onBackToCandidates}
+          onWrapUp={handleWrapUp}
+        />
+        <VoiceSetup
+          isOpen={showVoiceSetup}
+          onClose={() => setShowVoiceSetup(false)}
+          onConfirm={handleConfirmVoiceSetup}
+          sessionId={sessionId}
+        />
+      </>
+    );
+  }
+
+
   return (
     <div className="chat-container">
+      <VoiceSetup
+        isOpen={showVoiceSetup}
+        onClose={() => setShowVoiceSetup(false)}
+        onConfirm={handleConfirmVoiceSetup}
+        sessionId={sessionId}
+      />
+
       {/* Sidebar Metadata */}
       <div className="sidebar-panel">
         <button
@@ -140,13 +211,13 @@ export default function InterviewChat({ candidate, onBackToCandidates, onIntervi
         {/* Progress Tracker */}
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: '0.4rem' }}>
-            <span style={{ color: 'var(--text-muted)' }}>Questions Progress</span>
-            <span style={{ fontWeight: 700, color: 'var(--primary)' }}>{meta.questionCount} / 8+</span>
+            <span style={{ color: 'var(--text-muted)' }}>Main Questions</span>
+            <span style={{ fontWeight: 700, color: 'var(--primary)' }}>{currentMainQ} / 5</span>
           </div>
           <div style={{ height: 6, background: 'rgba(255,255,255,0.1)', borderRadius: 3, overflow: 'hidden' }}>
             <div
               style={{
-                width: `${Math.min((meta.questionCount / 8) * 100, 100)}%`,
+                width: `${Math.min((currentMainQ / 5) * 100, 100)}%`,
                 height: '100%',
                 background: 'linear-gradient(90deg, var(--primary), var(--secondary))',
                 transition: 'width 0.3s ease'
@@ -194,14 +265,18 @@ export default function InterviewChat({ candidate, onBackToCandidates, onIntervi
 
       {/* Main Chat Stream */}
       <div className="chat-main">
-        <div className="chat-header">
+        <div className="chat-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
             <Bot size={20} style={{ color: 'var(--primary)' }} />
             <div>
               <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>AI Technical Interviewer</div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--accent-emerald)' }}>● Active Session · Multi-Turn Adaptive Mode</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--accent-emerald)' }}>
+                ● Active Session · Technical Evaluation
+              </div>
             </div>
           </div>
+
+          <VoiceModeToggle voiceMode={voiceMode} onToggle={handleToggleVoiceMode} />
         </div>
 
         <div className="chat-messages">
@@ -233,6 +308,29 @@ export default function InterviewChat({ candidate, onBackToCandidates, onIntervi
             onChange={(e) => setInputMessage(e.target.value)}
             disabled={loading}
           />
+          <button
+            type="button"
+            onClick={handleSkipQuestion}
+            disabled={loading}
+            className="skip-btn"
+            title="Skip this question and move directly to the next technical topic"
+            style={{
+              background: 'rgba(245, 158, 11, 0.15)',
+              border: '1px solid rgba(245, 158, 11, 0.4)',
+              color: '#f59e0b',
+              borderRadius: 'var(--radius-sm)',
+              padding: '0 1.1rem',
+              fontWeight: 600,
+              fontSize: '0.85rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            <SkipForward size={16} /> Skip
+          </button>
           <button type="submit" className="send-btn" disabled={loading || !inputMessage.trim()}>
             <Send size={16} /> Send
           </button>

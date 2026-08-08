@@ -30,3 +30,5 @@ class InterviewRequest(BaseModel):
     sessionId: str = Field(..., description="Unique session identifier for tracking state")
     candidate: Optional[Dict[str, Any]] = Field(None, description="Candidate details provided on start")
     message: Optional[str] = Field(None, description="Candidate response text provided on turn")
+    voice_mode: Optional[bool] = Field(False, description="Whether session is running in voice mode")
+

@@ -13,9 +13,9 @@ class FeedbackGenerator:
         history = session.get("history", [])
         topics_covered = session.get("topicsCovered", [])
 
-        # If LLM is available, we can use it to generate a rich personalized feedback JSON
-        if llm:
+        if llm or True:
             try:
+                import os
                 from langchain_core.prompts import PromptTemplate
                 prompt = PromptTemplate.from_template("""
 You are an expert AI Technical Interview Evaluator.
@@ -37,25 +37,53 @@ Return ONLY a JSON object matching this exact schema without any markdown wrappi
 }}
 """)
                 transcript_str = "\n".join([f"{m['role'].upper()}: {m['content']}" for m in history[-16:]])
-                raw_response = llm.invoke(prompt.format(
+                formatted_prompt = prompt.format(
                     name=name,
                     job_role=job_role,
                     depth_tier=depth_tier,
                     question_count=question_count,
                     topics_covered=", ".join([str(t) for t in topics_covered]),
                     transcript=transcript_str
-                ))
-                content = raw_response.content if hasattr(raw_response, 'content') else str(raw_response)
-                
-                # Clean code blocks if present
-                clean_json = content.strip()
-                if clean_json.startswith("```"):
-                    clean_json = clean_json.split("\n", 1)[1]
-                    if clean_json.endswith("```"):
-                        clean_json = clean_json.rsplit("```", 1)[0]
-                
-                parsed = json.loads(clean_json.strip())
-                return parsed
+                )
+
+                groq_api_key = os.getenv("GROQ_API_KEY")
+                openai_api_key = os.getenv("OPENAI_API_KEY")
+                models_to_try = []
+                if groq_api_key and not groq_api_key.startswith("your_"):
+                    models_to_try.extend([
+                        ("groq", "llama-3.3-70b-versatile"),
+                        ("groq", "llama-3.1-8b-instant"),
+                        ("groq", "mixtral-8x7b-32768")
+                    ])
+                if openai_api_key and not openai_api_key.startswith("your_"):
+                    models_to_try.append(("openai", "gpt-4o-mini"))
+
+                clean_json = None
+                for provider, model_name in models_to_try:
+                    try:
+                        if provider == "groq":
+                            from langchain_groq import ChatGroq
+                            eval_llm = ChatGroq(model_name=model_name, groq_api_key=groq_api_key, temperature=0.7)
+                        else:
+                            from langchain_openai import ChatOpenAI
+                            eval_llm = ChatOpenAI(model_name=model_name, openai_api_key=openai_api_key, temperature=0.7)
+
+                        res = eval_llm.invoke(formatted_prompt)
+                        content = res.content if hasattr(res, 'content') else str(res)
+                        clean_json = content.strip()
+                        if clean_json:
+                            break
+                    except Exception as me:
+                        print(f"[FeedbackGenerator] Model '{model_name}' notice: {me}")
+                        continue
+
+                if clean_json:
+                    if clean_json.startswith("```"):
+                        clean_json = clean_json.split("\n", 1)[1]
+                        if clean_json.endswith("```"):
+                            clean_json = clean_json.rsplit("```", 1)[0]
+                    parsed = json.loads(clean_json.strip())
+                    return parsed
             except Exception as e:
                 print(f"[FeedbackGenerator] LLM generation fallback triggered: {e}")
 

@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from fastapi import APIRouter, HTTPException, status
 from typing import Dict, Any, List
 
@@ -14,6 +15,21 @@ router = APIRouter()
 BASE_DIR = os.path.dirname(__file__)
 CANDIDATES_FILE = os.path.join(BASE_DIR, "data", "candidates.json")
 CURRICULUM_FILE = os.path.join(BASE_DIR, "data", "curriculum.json")
+
+def clean_for_speech(text: str) -> str:
+    if not text:
+        return ""
+    # Strip code blocks
+    cleaned = re.sub(r'```[\s\S]*?```', ' [code snippet omitted] ', text)
+    # Strip inline code ticks
+    cleaned = re.sub(r'`([^`]+)`', r'\1', cleaned)
+    # Strip markdown bold/italic
+    cleaned = re.sub(r'[*_]{1,3}([^*_]+)[*_]{1,3}', r'\1', cleaned)
+    # Strip header hashes
+    cleaned = re.sub(r'#+\s*', '', cleaned)
+    # Normalize extra whitespace
+    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+    return cleaned
 
 @router.get("/api/health")
 def health_check():
@@ -59,9 +75,12 @@ def handle_interview(payload: InterviewRequest):
 
         return InterviewResponse(
             reply=reply_text,
+            tts_text=clean_for_speech(reply_text),
             done=False,
+            mainQuestionCount=session.get("mainQuestionCount", 1),
             meta={
                 "questionCount": session["questionCount"],
+                "mainQuestionCount": session.get("mainQuestionCount", 1),
                 "depthTier": depth_tier,
                 "topicsCovered": session["topicsCovered"],
                 "candidateName": analysis["name"]
@@ -90,16 +109,35 @@ def handle_interview(payload: InterviewRequest):
         if done and feedback_data:
             feedback_obj = FeedbackResponse(**feedback_data)
 
+        turn_meta = session.get("lastTurnMeta", {})
+        is_follow_up = turn_meta.get("isFollowUp", False)
+        follow_up_count = turn_meta.get("followUpCount", 0)
+        evaluation_score = turn_meta.get("evaluationScore", None)
+        main_q_count = session.get("mainQuestionCount", 1)
+
+        meta_dict = {
+            "questionCount": session["questionCount"],
+            "mainQuestionCount": main_q_count,
+            "depthTier": session["depthTier"],
+            "topicsCovered": session["topicsCovered"],
+            "isFollowUp": is_follow_up,
+            "followUpCount": follow_up_count,
+            "evaluationScore": evaluation_score,
+            "evaluationReason": turn_meta.get("evaluationReason", "")
+        }
+
         return InterviewResponse(
             reply=reply_text,
+            tts_text=clean_for_speech(reply_text),
             done=done,
+            isFollowUp=is_follow_up,
+            followUpCount=follow_up_count,
+            evaluationScore=evaluation_score,
+            mainQuestionCount=main_q_count,
             feedback=feedback_obj,
-            meta={
-                "questionCount": session["questionCount"],
-                "depthTier": session["depthTier"],
-                "topicsCovered": session["topicsCovered"]
-            }
+            meta=meta_dict
         )
+
 
     raise HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,

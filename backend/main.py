@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 from backend.router import router
+from backend.voice_router import voice_router
 
 load_dotenv()
 
@@ -24,6 +25,8 @@ app.add_middleware(
 )
 
 app.include_router(router)
+app.include_router(voice_router)
+
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))

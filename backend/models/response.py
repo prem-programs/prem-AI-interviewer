@@ -9,6 +9,12 @@ class FeedbackResponse(BaseModel):
 
 class InterviewResponse(BaseModel):
     reply: str
+    tts_text: Optional[str] = None
     done: bool = False
+    isFollowUp: Optional[bool] = False
+    followUpCount: Optional[int] = 0
+    evaluationScore: Optional[int] = None
+    mainQuestionCount: Optional[int] = 0
     feedback: Optional[FeedbackResponse] = None
     meta: Optional[Dict[str, Any]] = None
+
