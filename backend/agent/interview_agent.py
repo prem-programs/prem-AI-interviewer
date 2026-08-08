@@ -3,9 +3,14 @@ import json
 from typing import Dict, Any, Tuple
 from dotenv import load_dotenv
 
-from backend.agent.profile_analyzer import ProfileAnalyzer
-from backend.agent.question_bank import question_bank
-from backend.agent.feedback_generator import FeedbackGenerator
+try:
+    from backend.agent.profile_analyzer import ProfileAnalyzer
+    from backend.agent.question_bank import question_bank
+    from backend.agent.feedback_generator import FeedbackGenerator
+except ModuleNotFoundError:
+    from agent.profile_analyzer import ProfileAnalyzer
+    from agent.question_bank import question_bank
+    from agent.feedback_generator import FeedbackGenerator
 
 # Load environment variables from .env or backend/.env
 env_paths = [

@@ -1,1 +1,1 @@
-# Models package
+# backend.models package initialization
