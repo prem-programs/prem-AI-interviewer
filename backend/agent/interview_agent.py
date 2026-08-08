@@ -235,12 +235,16 @@ Rules:
                     if clean_json.endswith("```"):
                         clean_json = clean_json.rsplit("```", 1)[0]
                 parsed = json.loads(clean_json.strip())
+                explicit_unc = bool(parsed.get("is_explicit_uncertainty", is_explicit_uncertainty)) or is_explicit_uncertainty
+                sat = bool(parsed.get("satisfied", True))
+                if explicit_unc:
+                    sat = False
                 return {
-                    "satisfied": bool(parsed.get("satisfied", True)),
-                    "score": int(parsed.get("score", 3)),
+                    "satisfied": sat,
+                    "score": 1 if explicit_unc else int(parsed.get("score", 3)),
                     "strong_point": str(parsed.get("strong_point", "")),
                     "weak_point": str(parsed.get("weak_point", "")),
-                    "is_explicit_uncertainty": bool(parsed.get("is_explicit_uncertainty", is_explicit_uncertainty)),
+                    "is_explicit_uncertainty": explicit_unc,
                     "is_manipulation_attempt": bool(parsed.get("is_manipulation_attempt", False)) or self._check_manipulation_attempt(user_message),
                     "reason": str(parsed.get("reason", ""))
                 }

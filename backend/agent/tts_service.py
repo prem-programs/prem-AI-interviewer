@@ -10,6 +10,12 @@ class TTSService:
         self._init_pocket_tts()
 
     def _init_pocket_tts(self):
+        # On memory-limited cloud hosts (Render 512MB limit), skip heavy PyTorch Pocket TTS pre-loading unless explicitly enabled
+        enable_pocket = os.getenv("ENABLE_POCKET_TTS", "false").lower() in ("true", "1", "yes")
+        if not enable_pocket:
+            print("[TTS] Cloud/Memory-optimized mode: Web Browser TTS active (Memory < 70MB).")
+            return
+
         try:
             from pocket_tts import TTSModel
             print("[TTS] Initializing Pocket TTS model with INT8 quantization...")
