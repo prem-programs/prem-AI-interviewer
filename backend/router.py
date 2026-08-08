@@ -4,11 +4,18 @@ import re
 from fastapi import APIRouter, HTTPException, status
 from typing import Dict, Any, List
 
-from backend.models.request import InterviewRequest
-from backend.models.response import InterviewResponse, FeedbackResponse
-from backend.session_store import session_store
-from backend.agent.profile_analyzer import ProfileAnalyzer
-from backend.agent.interview_agent import interview_agent
+try:
+    from backend.models.request import InterviewRequest
+    from backend.models.response import InterviewResponse, FeedbackResponse
+    from backend.session_store import session_store
+    from backend.agent.profile_analyzer import ProfileAnalyzer
+    from backend.agent.interview_agent import interview_agent
+except ModuleNotFoundError:
+    from models.request import InterviewRequest
+    from models.response import InterviewResponse, FeedbackResponse
+    from session_store import session_store
+    from agent.profile_analyzer import ProfileAnalyzer
+    from agent.interview_agent import interview_agent
 
 router = APIRouter()
 

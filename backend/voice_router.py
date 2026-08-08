@@ -5,7 +5,12 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import Optional
 
-from backend.agent.tts_service import tts_service
+try:
+    from backend.agent.tts_service import tts_service
+    from backend.agent.stt_service import stt_service
+except ModuleNotFoundError:
+    from agent.tts_service import tts_service
+    from agent.stt_service import stt_service
 
 voice_router = APIRouter()
 
@@ -17,8 +22,6 @@ class SynthesizeRequest(BaseModel):
     text: str
     session_id: Optional[str] = None
     voice: Optional[str] = None
-
-from backend.agent.stt_service import stt_service
 
 @voice_router.post("/api/voice/synthesize")
 def synthesize_voice(req: SynthesizeRequest):

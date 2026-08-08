@@ -1,11 +1,26 @@
 import os
+import sys
+from pathlib import Path
+
+# Bootstrapping sys.path so 'backend' module is always found on Render / Railway
+file_dir = Path(__file__).resolve().parent
+root_dir = file_dir.parent
+if str(root_dir) not in sys.path:
+    sys.path.insert(0, str(root_dir))
+if str(file_dir) not in sys.path:
+    sys.path.insert(0, str(file_dir))
+
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
-from backend.router import router
-from backend.voice_router import voice_router
+try:
+    from backend.router import router
+    from backend.voice_router import voice_router
+except ModuleNotFoundError:
+    from router import router
+    from voice_router import voice_router
 
 load_dotenv()
 
