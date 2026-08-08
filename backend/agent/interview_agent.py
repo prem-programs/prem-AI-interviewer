@@ -195,6 +195,18 @@ Instructions:
         msg_lower = user_message.lower().strip()
         is_explicit_uncertainty = any(p in msg_lower for p in vague_phrases)
 
+        # Deterministic fast path for explicit uncertainty
+        if is_explicit_uncertainty:
+            return {
+                "satisfied": False,
+                "score": 1,
+                "strong_point": "",
+                "weak_point": "You indicated that you're not sure about this topic.",
+                "is_explicit_uncertainty": True,
+                "is_manipulation_attempt": False,
+                "reason": "Candidate explicitly indicated uncertainty"
+            }
+
         if self.llm:
             try:
                 from langchain_core.prompts import PromptTemplate
