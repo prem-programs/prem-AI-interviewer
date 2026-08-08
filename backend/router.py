@@ -19,9 +19,21 @@ except ModuleNotFoundError:
 
 router = APIRouter()
 
-BASE_DIR = os.path.dirname(__file__)
-CANDIDATES_FILE = os.path.join(BASE_DIR, "data", "candidates.json")
-CURRICULUM_FILE = os.path.join(BASE_DIR, "data", "curriculum.json")
+def resolve_data_path(filename: str) -> str:
+    possible_paths = [
+        os.path.join(os.path.dirname(__file__), "data", filename),
+        os.path.join(os.path.dirname(os.path.dirname(__file__)), "backend", "data", filename),
+        os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", filename),
+        os.path.join("backend", "data", filename),
+        os.path.join("data", filename)
+    ]
+    for p in possible_paths:
+        if os.path.exists(p):
+            return p
+    return os.path.join(os.path.dirname(__file__), "data", filename)
+
+CANDIDATES_FILE = resolve_data_path("candidates.json")
+CURRICULUM_FILE = resolve_data_path("curriculum.json")
 
 def clean_for_speech(text: str) -> str:
     if not text:

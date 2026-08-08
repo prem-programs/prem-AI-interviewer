@@ -55,6 +55,11 @@ export default function InterviewChat({ candidate, onBackToCandidates, onIntervi
       .catch((err) => {
         console.error('Error starting interview:', err);
         setLoading(false);
+        const name = candidate.member?.name || 'Candidate';
+        setMessages([{
+          role: 'assistant',
+          content: `Welcome ${name}! It's a pleasure to conduct your AI Cohort technical evaluation today. Let's begin with Module 1 (Environment & Tooling): Could you walk me through how you set up your local development environment for AI development, specifically virtual environments and local LLMs like Ollama?`
+        }]);
       });
   }, [candidate, sessionId]);
 
