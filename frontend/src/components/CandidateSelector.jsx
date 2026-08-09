@@ -64,16 +64,15 @@ export default function CandidateSelector({ onSelectCandidate }) {
           setError(null);
         } else {
           setCandidates(FALLBACK_CANDIDATES);
+          setError(null);
         }
         setLoading(false);
       })
       .catch((err) => {
         console.warn('API fetch warning, using candidate fallback list:', err);
         setCandidates(FALLBACK_CANDIDATES);
+        setError(null);
         setLoading(false);
-        if (!isRetry) {
-          setTimeout(() => fetchCandidates(true), 3000);
-        }
       });
   };
 
