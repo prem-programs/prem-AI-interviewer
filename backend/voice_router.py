@@ -35,6 +35,9 @@ def synthesize_voice(req: SynthesizeRequest):
             voice_path = custom_voice
 
     audio_bytes = tts_service.synthesize_wav(req.text, voice=req.voice, voice_path=voice_path)
+    if not audio_bytes or len(audio_bytes) < 100:
+        raise HTTPException(status_code=503, detail="Backend TTS voice synthesis unavailable")
+
     media_type = "audio/wav"
     if audio_bytes.startswith(b'\xff\xfb') or audio_bytes.startswith(b'ID3') or audio_bytes.startswith(b'\xff\xf3') or audio_bytes.startswith(b'\xff\xf2'):
         media_type = "audio/mpeg"

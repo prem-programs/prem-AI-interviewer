@@ -7,6 +7,8 @@ import struct
 class TTSService:
     def __init__(self):
         self.tts = None
+        self._gtts_available = None
+        self._pyttsx3_available = None
         self._init_pocket_tts()
 
     def _init_pocket_tts(self):
@@ -14,7 +16,6 @@ class TTSService:
         # Set ENABLE_POCKET_TTS=true in environment if high RAM (4GB+) and local PyTorch is desired.
         enable_pocket = os.getenv("ENABLE_POCKET_TTS", "false").lower() in ("true", "1", "yes")
         if not enable_pocket:
-            print("[TTS] High-speed real human voice active (gTTS engine). Pocket TTS skipped to prevent HF OOM Killed crashes.")
             return
 
         try:
@@ -30,11 +31,12 @@ class TTSService:
                 print(f"[TTS] Default voice state load notice: {ve}")
                 self.default_voice_state = {}
         except Exception as e:
-            print(f"[TTS] Pocket TTS init notice: {e}. Real-voice gTTS fallback active.")
+            print(f"[TTS] Pocket TTS init notice: {e}. Real-voice gTTS / Web Speech fallback active.")
 
     def synthesize_wav(self, text: str, voice: str = None, voice_path: str = None) -> bytes:
         """
         Synthesizes text into WAV/MP3 bytes using Pocket TTS if loaded, else real-voice gTTS fallback generator.
+        Returns b"" if no real TTS engine is available so caller can fallback to Web Speech API.
         """
         if self.tts is not None:
             try:
@@ -84,85 +86,68 @@ class TTSService:
 
         return self._generate_fallback_wav(text)
 
-
     def synthesize_pcm_chunks(self, text: str, voice_path: str = None, chunk_size: int = 4096):
         """
         Yields PCM audio data chunks for WebSocket streaming.
         """
-        wav_bytes = self.synthesize_wav(text, voice_path)
-        # Skip header if present (44 bytes for WAV), yield raw audio frames
+        wav_bytes = self.synthesize_wav(text, voice_path=voice_path)
+        if not wav_bytes:
+            return
         pcm_data = wav_bytes[44:] if len(wav_bytes) > 44 else wav_bytes
         for i in range(0, len(pcm_data), chunk_size):
             yield pcm_data[i:i + chunk_size]
 
     def _generate_fallback_wav(self, text: str) -> bytes:
         """
-        Fallback voice synthesizer using gTTS (Google Text-To-Speech) or pyttsx3
-        to generate real spoken voice audio instead of synthetic sine tones.
+        Fallback voice synthesizer using gTTS (Google Text-To-Speech) or pyttsx3.
+        Returns b"" if no real speech library is installed, enabling client Web Speech API fallback.
         """
         # Primary fallback: gTTS (Google Text-To-Speech)
-        try:
-            from gtts import gTTS
-            tts = gTTS(text=text, lang='en')
-            buf = io.BytesIO()
-            tts.write_to_fp(buf)
-            audio_bytes = buf.getvalue()
-            if audio_bytes and len(audio_bytes) > 100:
-                return audio_bytes
-        except Exception as ge:
-            print(f"[TTS] gTTS fallback notice: {ge}")
+        if self._gtts_available is not False:
+            try:
+                from gtts import gTTS
+                tts = gTTS(text=text, lang='en')
+                buf = io.BytesIO()
+                tts.write_to_fp(buf)
+                audio_bytes = buf.getvalue()
+                if audio_bytes and len(audio_bytes) > 100:
+                    self._gtts_available = True
+                    return audio_bytes
+            except ModuleNotFoundError:
+                if self._gtts_available is None:
+                    print("[TTS] gTTS package not found in Python environment. Client Web Speech API fallback ready.")
+                self._gtts_available = False
+            except Exception as ge:
+                print(f"[TTS] gTTS synthesis notice: {ge}")
 
         # Secondary fallback: pyttsx3 (SAPI5 / NSSpeech)
-        try:
-            import pyttsx3
-            import tempfile
-            engine = pyttsx3.init()
-            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tf:
-                temp_filename = tf.name
-            engine.save_to_file(text, temp_filename)
-            engine.runAndWait()
-            with open(temp_filename, "rb") as f:
-                audio_bytes = f.read()
+        if self._pyttsx3_available is not False:
             try:
-                os.unlink(temp_filename)
-            except Exception:
-                pass
-            if audio_bytes and len(audio_bytes) > 44:
-                return audio_bytes
-        except Exception as pe:
-            print(f"[TTS] pyttsx3 fallback notice: {pe}")
+                import pyttsx3
+                import tempfile
+                engine = pyttsx3.init()
+                with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tf:
+                    temp_filename = tf.name
+                engine.save_to_file(text, temp_filename)
+                engine.runAndWait()
+                with open(temp_filename, "rb") as f:
+                    audio_bytes = f.read()
+                try:
+                    os.unlink(temp_filename)
+                except Exception:
+                    pass
+                if audio_bytes and len(audio_bytes) > 44:
+                    self._pyttsx3_available = True
+                    return audio_bytes
+            except ModuleNotFoundError:
+                self._pyttsx3_available = False
+            except Exception as pe:
+                print(f"[TTS] pyttsx3 synthesis notice: {pe}")
+                self._pyttsx3_available = False
 
-        # Tertiary tone fallback if all speech libraries fail
-        sample_rate = 24000
-        words = text.split() if text else ["Hello"]
-        duration_per_word = 0.20
-        total_duration = max(1.0, len(words) * duration_per_word)
-        num_samples = int(sample_rate * total_duration)
-
-        buf = io.BytesIO()
-        with wave.open(buf, 'wb') as wav_file:
-            wav_file.setnchannels(1)
-            wav_file.setsampwidth(2)
-            wav_file.setframerate(sample_rate)
-
-            samples = []
-            base_freq = 180.0
-            for i in range(num_samples):
-                t = i / sample_rate
-                word_idx = min(int(t / duration_per_word), len(words) - 1)
-                word = words[word_idx] if words else ""
-                char_mod = sum(ord(c) for c in word) % 40 if word else 0
-                freq = base_freq + math.sin(t * 10) * 15 + char_mod
-
-                val = (0.6 * math.sin(2 * math.pi * freq * t) +
-                       0.25 * math.sin(4 * math.pi * freq * t))
-                envelope = min(1.0, t * 10) * min(1.0, (total_duration - t) * 10)
-                sample = int(val * envelope * 14000)
-                samples.append(struct.pack('<h', max(-32768, min(32767, sample))))
-
-            wav_file.writeframes(b''.join(samples))
-
-        return buf.getvalue()
+        # Return empty bytes if no backend TTS library is available
+        # so frontend Web Speech API (window.speechSynthesis) takes over
+        return b""
 
 tts_service = TTSService()
 
