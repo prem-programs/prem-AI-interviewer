@@ -287,6 +287,7 @@ export function useVoicePipeline({ onTranscriptFinal, initialVoice = 'alba' }) {
           try {
             window.speechSynthesis.cancel();
             const utterance = new SpeechSynthesisUtterance(sentences[idx]);
+            utterance.rate = 1.15; // Brisk, natural human conversational rate
             utterance.onend = () => playNextSentence();
             utterance.onerror = () => playNextSentence();
             window.speechSynthesis.speak(utterance);
@@ -301,6 +302,7 @@ export function useVoicePipeline({ onTranscriptFinal, initialVoice = 'alba' }) {
 
       try {
         const audio = new Audio(audioUrl);
+        audio.playbackRate = 1.15; // Brisk, natural human conversational rate
         activeAudioRef.current = audio;
         audio.onended = () => {
           URL.revokeObjectURL(audioUrl);

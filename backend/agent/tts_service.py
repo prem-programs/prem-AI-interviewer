@@ -135,7 +135,7 @@ class TTSService:
         # Tertiary tone fallback if all speech libraries fail
         sample_rate = 24000
         words = text.split() if text else ["Hello"]
-        duration_per_word = 0.28
+        duration_per_word = 0.20
         total_duration = max(1.0, len(words) * duration_per_word)
         num_samples = int(sample_rate * total_duration)
 
