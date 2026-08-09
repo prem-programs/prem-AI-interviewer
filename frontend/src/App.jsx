@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Bot } from 'lucide-react';
 import CandidateSelector from './components/CandidateSelector';
 import InterviewChat from './components/InterviewChat';
 import FeedbackPanel from './components/FeedbackPanel';
@@ -35,7 +36,9 @@ export default function App() {
       {/* Header Bar */}
       <header className="app-header">
         <div className="brand-logo" onClick={handleSwitchCandidate} style={{ cursor: 'pointer' }}>
-          <div className="brand-icon">🤖</div>
+          <div className="brand-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Bot size={22} color="#38bdf8" />
+          </div>
           <div>
             <div className="brand-title">AI Interviewer</div>
             <div className="brand-subtitle">Adaptive Multi-Turn Technical Evaluation Agent</div>

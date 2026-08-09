@@ -1,5 +1,5 @@
 import React from 'react';
-import { Award, CheckCircle2, AlertTriangle, ArrowRightCircle, RotateCcw, Users } from 'lucide-react';
+import { Award, CheckCircle2, AlertTriangle, ArrowRightCircle, RotateCcw, Users, Trophy } from 'lucide-react';
 
 export default function FeedbackPanel({ feedback, candidate, onRestart, onSwitchCandidate }) {
   if (!feedback) return null;
@@ -7,8 +7,8 @@ export default function FeedbackPanel({ feedback, candidate, onRestart, onSwitch
   return (
     <div className="feedback-panel">
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <div className="brand-icon" style={{ margin: '0 auto 1rem', width: 64, height: 64, fontSize: '2rem' }}>
-          🏆
+        <div className="brand-icon" style={{ margin: '0 auto 1rem', width: 64, height: 64, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Trophy size={32} color="#f59e0b" />
         </div>
         <h2 className="feedback-title">Interview Completed!</h2>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>
@@ -38,8 +38,8 @@ export default function FeedbackPanel({ feedback, candidate, onRestart, onSwitch
           <CheckCircle2 size={18} /> Key Technical Strengths
         </h4>
         {feedback.strengths?.map((str, i) => (
-          <div key={i} className="list-item" style={{ borderLeft: '3px solid var(--accent-emerald)' }}>
-            <span style={{ color: 'var(--accent-emerald)', fontWeight: 'bold' }}>✓</span>
+          <div key={i} className="list-item" style={{ borderLeft: '3px solid var(--accent-emerald)', display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+            <CheckCircle2 size={14} color="var(--accent-emerald)" style={{ flexShrink: 0, marginTop: 2 }} />
             <span>{str}</span>
           </div>
         ))}
@@ -51,8 +51,8 @@ export default function FeedbackPanel({ feedback, candidate, onRestart, onSwitch
           <AlertTriangle size={18} /> Areas for Technical Improvement
         </h4>
         {feedback.gaps?.map((gap, i) => (
-          <div key={i} className="list-item" style={{ borderLeft: '3px solid var(--accent-amber)' }}>
-            <span style={{ color: 'var(--accent-amber)', fontWeight: 'bold' }}>!</span>
+          <div key={i} className="list-item" style={{ borderLeft: '3px solid var(--accent-amber)', display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+            <AlertTriangle size={14} color="var(--accent-amber)" style={{ flexShrink: 0, marginTop: 2 }} />
             <span>{gap}</span>
           </div>
         ))}
@@ -64,8 +64,8 @@ export default function FeedbackPanel({ feedback, candidate, onRestart, onSwitch
           <ArrowRightCircle size={18} /> Actionable Learning Path
         </h4>
         {feedback.next?.map((step, i) => (
-          <div key={i} className="list-item" style={{ borderLeft: '3px solid var(--primary)' }}>
-            <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>→</span>
+          <div key={i} className="list-item" style={{ borderLeft: '3px solid var(--primary)', display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+            <ArrowRightCircle size={14} color="var(--primary)" style={{ flexShrink: 0, marginTop: 2 }} />
             <span>{step}</span>
           </div>
         ))}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mic, CheckCircle2, AlertTriangle, Play, X, Sparkles, Volume2 } from 'lucide-react';
+import { Mic, CheckCircle2, AlertTriangle, Play, X, Sparkles, Volume2, Brain, Zap } from 'lucide-react';
 import { POCKET_TTS_VOICES } from '../hooks/useVoicePipeline';
 import { API_BASE_URL } from '../config';
 
@@ -95,9 +95,9 @@ export default function VoiceSetup({ isOpen, onClose, onConfirm }) {
           fontSize:'0.82rem', lineHeight:1.7, color:'var(--text-muted)'
         }}>
           <div style={{ fontWeight:600, color:'var(--primary)', marginBottom:'0.4rem' }}>How it works</div>
-          🎤 <strong style={{color:'#f8fafc'}}>Tap the mic</strong> → speak your answer<br/>
-          🤔 AI evaluates &amp; generates the technical question<br/>
-          🔊 <strong style={{color:'#f8fafc'}}>Pocket TTS speaks</strong> the question aloud
+          <Mic size={14} style={{ display:'inline', verticalAlign:'-2px', marginRight:6, color:'#38bdf8' }}/> <strong style={{color:'#f8fafc'}}>Tap the mic</strong> → speak your answer<br/>
+          <Brain size={14} style={{ display:'inline', verticalAlign:'-2px', marginRight:6, color:'#a855f7' }}/> AI evaluates &amp; generates the technical question<br/>
+          <Volume2 size={14} style={{ display:'inline', verticalAlign:'-2px', marginRight:6, color:'#38bdf8' }}/> <strong style={{color:'#f8fafc'}}>Pocket TTS speaks</strong> the question aloud
         </div>
 
         {/* ── Pocket TTS Voice Selection ── */}
@@ -147,8 +147,8 @@ export default function VoiceSetup({ isOpen, onClose, onConfirm }) {
             marginTop:'0.5rem', fontSize:'0.72rem', color:'var(--text-muted)',
             display:'flex', alignItems:'center', gap:'0.35rem'
           }}>
-            <Volume2 size={11}/>
-            ⚡ PyTorch Pocket TTS model (24kHz WAV, zero external web APIs)
+            <Zap size={11} color="#f59e0b"/>
+            PyTorch Pocket TTS model (24kHz WAV, zero external web APIs)
           </div>
         </div>
 

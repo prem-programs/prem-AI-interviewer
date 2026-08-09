@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Award, CheckCircle, Flame, Briefcase, GraduationCap } from 'lucide-react';
+import { User, Award, CheckCircle, Flame, Briefcase, GraduationCap, Bot } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 
 const FALLBACK_CANDIDATES = [
@@ -102,7 +102,9 @@ export default function CandidateSelector({ onSelectCandidate }) {
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '4rem 1rem' }}>
-        <div className="brand-icon" style={{ margin: '0 auto 1rem', width: 56, height: 56 }}>🤖</div>
+        <div className="brand-icon" style={{ margin: '0 auto 1rem', width: 56, height: 56, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Bot size={32} color="#38bdf8" />
+        </div>
         <p style={{ color: 'var(--text-muted)' }}>Loading AI Cohort Candidate Profiles...</p>
       </div>
     );

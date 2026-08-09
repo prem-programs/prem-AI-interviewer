@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Mic, MicOff, Volume2, Bot, Sparkles,
-  CheckCircle2, ChevronLeft, Flag, AlertCircle, Settings2, ChevronDown, SkipForward
+  CheckCircle2, ChevronLeft, Flag, AlertCircle, Settings2, ChevronDown, SkipForward, Pause
 } from 'lucide-react';
 
 import { useVoicePipeline } from '../hooks/useVoicePipeline';
@@ -88,10 +88,10 @@ export default function VoiceInterviewChat({
 
   const getStateBadge = () => {
     switch (voiceState) {
-      case 'LISTENING':   return { text: '🎤 Listening — speak your answer', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' };
-      case 'PROCESSING':  return { text: '🤔 AI Thinking...', color: '#a855f7', bg: 'rgba(168,85,247,0.12)' };
-      case 'SPEAKING':    return { text: '🔊 AI Interviewer Speaking (Pocket TTS)', color: '#38bdf8', bg: 'rgba(56,189,248,0.12)' };
-      default:            return { text: '⏸ Tap mic or type to respond', color: 'var(--text-muted)', bg: 'rgba(255,255,255,0.04)' };
+      case 'LISTENING':   return { text: 'Listening — speak your answer', icon: <Mic size={14} />, color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' };
+      case 'PROCESSING':  return { text: 'AI Thinking...', icon: <Sparkles size={14} className="pulse-dot" />, color: '#a855f7', bg: 'rgba(168,85,247,0.12)' };
+      case 'SPEAKING':    return { text: 'AI Interviewer Speaking', icon: <Volume2 size={14} />, color: '#38bdf8', bg: 'rgba(56,189,248,0.12)' };
+      default:            return { text: 'Tap mic or type to respond', icon: <Pause size={14} />, color: 'var(--text-muted)', bg: 'rgba(255,255,255,0.04)' };
     }
   };
 
@@ -208,7 +208,7 @@ export default function VoiceInterviewChat({
               display:'flex', alignItems:'center', gap:'0.5rem',
               boxShadow:'0 4px 15px rgba(0,0,0,0.2)'
             }}>
-              {voiceState === 'PROCESSING' && <Sparkles size={15} className="pulse-dot"/>}
+              {badge.icon}
               {badge.text}
             </div>
           )}
@@ -264,8 +264,8 @@ export default function VoiceInterviewChat({
           <span style={{ fontSize:'0.76rem', color:'var(--text-muted)', display:'flex', flexDirection:'column', alignItems:'center', gap:'0.2rem' }}>
             <span>{voiceState === 'LISTENING' ? 'Tap again to stop & submit' : 'Tap mic to speak your answer'}</span>
             {voiceState === 'LISTENING' && (
-              <span style={{ fontSize:'0.7rem', color: micVolume > 5 ? '#38bdf8' : '#f59e0b', fontWeight:600 }}>
-                {micVolume > 5 ? `🎙️ Mic Input: ${micVolume}%` : '🎙️ Mic Active (Speak into microphone)'}
+              <span style={{ fontSize:'0.7rem', color: micVolume > 5 ? '#38bdf8' : '#f59e0b', fontWeight:600, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                <Mic size={12} /> {micVolume > 5 ? `Mic Input: ${micVolume}%` : 'Mic Active (Speak into microphone)'}
               </span>
             )}
           </span>
