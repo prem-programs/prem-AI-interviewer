@@ -30,7 +30,7 @@
 | **Project**        | prem-AI-interviewer                            |
 | **Hackathon**      | Vibecodathon                                   |
 | **Session Date**   | 2026-08-07                                     |
-| **Total Prompts**  | 34 *(updated as session progresses)*           |
+| **Total Prompts**  | 35 *(updated as session progresses)*           |
 | **AI Model**       | Gemini 3.6 Flash (High) via Antigravity         |
 | **Workspace**      | `d:\vibecodathon`                              |
 
@@ -872,9 +872,30 @@ INIT → GREETING → Q1 → EVAL → [FOLLOW_UP | NEXT_TOPIC] → ... → MIN_8
 - [`frontend/package.json`](file:///d:/vibecodathon/frontend/package.json) — Updated package name.
 - [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 34 session log.
 
+### Prompt 35 — Fix Railway PORT Conflict & Sanitize Environment API Key Strings
+
+**🕐 Timestamp:** 2026-08-09 11:12 IST
+
+**👤 User Prompt:**
+> "now when i added port 8000 and another env variable it goes down"
+
+**🤖 AI Implementation:**
+1. **Root Cause Analysis**:
+   - **Railway PORT Conflict**: Railway automatically injects a dynamic `$PORT` variable (e.g., 7142) for each container instance. Manually setting `PORT=8000` in Railway's Variable settings forces Uvicorn to listen on 8000 while Railway's load balancer expects traffic on its assigned `$PORT`, causing `502 Bad Gateway` and service crashes.
+   - **API Key Quoting**: Pasting API keys with quotes (`"gsk_..."`) or trailing whitespace into deployment dashboards can cause authentication failures.
+2. **Fixes Applied**:
+   - Added automatic whitespace and quote sanitization (`.strip().strip("'").strip('"')`) to `GROQ_API_KEY` and `OPENAI_API_KEY` in [`backend/agent/interview_agent.py`](file:///d:/vibecodathon/backend/agent/interview_agent.py) and [`backend/agent/stt_service.py`](file:///d:/vibecodathon/backend/agent/stt_service.py).
+   - Provided instructions to delete manual `PORT` key from Railway Variables so Railway manages container port binding automatically.
+
+**📁 Files Modified:**
+- [`backend/agent/interview_agent.py`](file:///d:/vibecodathon/backend/agent/interview_agent.py) — Cleaned API key environment strings.
+- [`backend/agent/stt_service.py`](file:///d:/vibecodathon/backend/agent/stt_service.py) — Cleaned STT API key strings.
+- [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 35 session log.
+
 ---
 
-*Last updated: 2026-08-09 10:58 IST · Total prompts logged: 34*
+*Last updated: 2026-08-09 11:13 IST · Total prompts logged: 35*
+
 
 
 
