@@ -10,15 +10,15 @@ class TTSService:
         self._init_pocket_tts()
 
     def _init_pocket_tts(self):
-        # On memory-limited cloud hosts (Render 512MB limit), skip heavy PyTorch Pocket TTS pre-loading unless explicitly enabled
-        enable_pocket = os.getenv("ENABLE_POCKET_TTS", "false").lower() in ("true", "1", "yes")
+        # Default ENABLE_POCKET_TTS to true so Pocket TTS initializes whenever package is installed
+        enable_pocket = os.getenv("ENABLE_POCKET_TTS", "true").lower() in ("true", "1", "yes")
         if not enable_pocket:
             print("[TTS] Cloud/Memory-optimized mode: Web Browser TTS active (Memory < 70MB).")
             return
 
         try:
             from pocket_tts import TTSModel
-            print("[TTS] Initializing Pocket TTS model with INT8 quantization...")
+            print("[TTS] Initializing Pocket TTS neural model with INT8 quantization...")
             self.tts = TTSModel.load_model(language="english", quantize=True)
             self.voice_cache = {}
             try:
@@ -37,7 +37,7 @@ class TTSService:
         """
         if self.tts is not None:
             try:
-                voice_state = self.default_voice_state
+                voice_state = getattr(self, 'default_voice_state', {})
                 if voice and voice.strip():
                     voice_key = voice.strip().lower()
                     if not hasattr(self, 'voice_cache'):
@@ -46,21 +46,26 @@ class TTSService:
                         voice_state = self.voice_cache[voice_key]
                     else:
                         try:
-                            voice_state = self.tts.get_state_for_audio_prompt(voice_key)
-                            self.voice_cache[voice_key] = voice_state
+                            if hasattr(self.tts, 'get_state_for_audio_prompt'):
+                                voice_state = self.tts.get_state_for_audio_prompt(voice_key)
+                                self.voice_cache[voice_key] = voice_state
                         except Exception as ve:
                             print(f"[TTS] Voice '{voice_key}' load notice: {ve}")
 
                 if voice_path and os.path.exists(voice_path):
                     try:
-                        voice_state = self.tts.get_state_for_audio_prompt(voice_path)
+                        if hasattr(self.tts, 'get_state_for_audio_prompt'):
+                            voice_state = self.tts.get_state_for_audio_prompt(voice_path)
                     except Exception as ve:
                         print(f"[TTS] Custom voice prompt fallback: {ve}")
 
-
-
+                audio_tensor = None
                 if hasattr(self.tts, 'generate_audio'):
                     audio_tensor = self.tts.generate_audio(voice_state, text)
+                elif hasattr(self.tts, 'synthesize'):
+                    audio_tensor = self.tts.synthesize(text, voice=voice)
+
+                if audio_tensor is not None:
                     if hasattr(audio_tensor, 'detach'):
                         audio_tensor = audio_tensor.detach().cpu()
                     if hasattr(audio_tensor, 'numpy'):
