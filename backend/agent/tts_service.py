@@ -10,10 +10,11 @@ class TTSService:
         self._init_pocket_tts()
 
     def _init_pocket_tts(self):
-        # Memory-Optimized Cloud Guard: Default ENABLE_POCKET_TTS to "true" locally unless explicitly disabled via ENABLE_POCKET_TTS=false
-        enable_pocket = os.getenv("ENABLE_POCKET_TTS", "true").lower() in ("true", "1", "yes")
+        # Memory-Optimized Cloud Guard: Default ENABLE_POCKET_TTS to "false" to prevent PyTorch HuggingFace OOM 'Killed' crashes.
+        # Set ENABLE_POCKET_TTS=true in environment if high RAM (4GB+) and local PyTorch is desired.
+        enable_pocket = os.getenv("ENABLE_POCKET_TTS", "false").lower() in ("true", "1", "yes")
         if not enable_pocket:
-            print("[TTS] Pocket TTS disabled via ENABLE_POCKET_TTS=false. Real-voice gTTS fallback active.")
+            print("[TTS] High-speed real human voice active (gTTS engine). Pocket TTS skipped to prevent HF OOM Killed crashes.")
             return
 
         try:

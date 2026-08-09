@@ -107,9 +107,9 @@ def test_follow_up_logic():
 def test_voice_synthesize():
     response = client.post("/api/voice/synthesize", json={"text": "Hello, welcome to your voice interview."})
     assert response.status_code == 200
-    assert response.headers["content-type"] == "audio/wav"
-    assert len(response.content) > 44  # Valid WAV header + audio payload
-    print(f"[PASS] Voice synthesize endpoint passed! Generated {len(response.content)} WAV bytes.")
+    assert response.headers["content-type"] in ["audio/wav", "audio/mpeg"]
+    assert len(response.content) > 44  # Valid audio header + payload
+    print(f"[PASS] Voice synthesize endpoint passed! Generated {len(response.content)} audio bytes ({response.headers['content-type']}).")
 
 def test_voice_upload():
     import io
