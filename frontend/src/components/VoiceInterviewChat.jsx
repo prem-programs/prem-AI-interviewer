@@ -107,9 +107,9 @@ export default function VoiceInterviewChat({
       display: 'grid',
       gridTemplateColumns: '1fr 340px',
       gap: '1.25rem',
-      height: '100%',
-      maxHeight: '100%',
-      minHeight: '0',
+      height: 'calc(100vh - 140px)',
+      maxHeight: '680px',
+      minHeight: '500px',
       flex: 1,
       overflow: 'hidden'
     }}>

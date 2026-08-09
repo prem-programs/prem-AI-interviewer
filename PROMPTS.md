@@ -30,7 +30,7 @@
 | **Project**        | prem-AI-interviewer                            |
 | **Hackathon**      | Vibecodathon                                   |
 | **Session Date**   | 2026-08-07                                     |
-| **Total Prompts**  | 27 *(updated as session progresses)*           |
+| **Total Prompts**  | 28 *(updated as session progresses)*           |
 | **AI Model**       | Gemini 3.6 Flash (High) via Antigravity         |
 | **Workspace**      | `d:\vibecodathon`                              |
 
@@ -736,9 +736,28 @@ INIT → GREETING → Q1 → EVAL → [FOLLOW_UP | NEXT_TOPIC] → ... → MIN_8
 - [`frontend/src/hooks/useVoicePipeline.js`](file:///d:/vibecodathon/frontend/src/hooks/useVoicePipeline.js) — Recording payload length validation and user error messages.
 - [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 27 session log.
 
+### Prompt 28 — Lock Fixed Non-Expanding Viewport Container Dimensions (Max Height 680px)
+
+**🕐 Timestamp:** 2026-08-09 10:00 IST
+
+**👤 User Prompt:**
+> "i want this same size no expansion" (with screenshot showing text chat layout at fixed height)
+
+**🤖 AI Implementation:**
+1. **Container Dimension Locking**:
+   - Set explicit `height: calc(100vh - 140px); max-height: 680px; min-height: 500px;` on `.chat-container` in [`frontend/src/styles/index.css`](file:///d:/vibecodathon/frontend/src/styles/index.css) and root grid container in [`VoiceInterviewChat.jsx`](file:///d:/vibecodathon/frontend/src/components/VoiceInterviewChat.jsx).
+   - Constrained `.app-container` to `height: 100vh; max-height: 100vh; overflow: hidden;`.
+   - Guaranteed that regardless of how many messages accumulate during multi-turn technical evaluation, the outer container UI stays strictly at this fixed size with 0 vertical expansion, scrolling all turn history internally inside `.chat-messages`.
+
+**📁 Files Modified:**
+- [`frontend/src/styles/index.css`](file:///d:/vibecodathon/frontend/src/styles/index.css) — Locked `.chat-container` to fixed max-height 680px.
+- [`frontend/src/components/VoiceInterviewChat.jsx`](file:///d:/vibecodathon/frontend/src/components/VoiceInterviewChat.jsx) — Locked Voice Mode container to matching fixed height.
+- [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 28 session log.
+
 ---
 
-*Last updated: 2026-08-09 09:56 IST · Total prompts logged: 27*
+*Last updated: 2026-08-09 10:01 IST · Total prompts logged: 28*
+
 
 
 
