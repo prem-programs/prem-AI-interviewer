@@ -30,7 +30,7 @@
 | **Project**        | prem-AI-interviewer                            |
 | **Hackathon**      | Vibecodathon                                   |
 | **Session Date**   | 2026-08-07                                     |
-| **Total Prompts**  | 37 *(updated as session progresses)*           |
+| **Total Prompts**  | 38 *(updated as session progresses)*           |
 | **AI Model**       | Gemini 3.6 Flash (High) via Antigravity         |
 | **Workspace**      | `d:\vibecodathon`                              |
 
@@ -931,9 +931,32 @@ INIT → GREETING → Q1 → EVAL → [FOLLOW_UP | NEXT_TOPIC] → ... → MIN_8
 - [`backend/agent/tts_service.py`](file:///d:/vibecodathon/backend/agent/tts_service.py) — Added memory guard for cloud container RAM bounds.
 - [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 37 session log.
 
+### Prompt 38 — Zero-Wobble Stationary Avatar & Opacity Wave Waveform Animations
+
+**🕐 Timestamp:** 2026-08-09 11:42 IST
+
+**👤 User Prompt:**
+> "ai is responding but it is still wobbling" / "Continue"
+
+**🤖 AI Implementation:**
+1. **Root Cause Analysis**:
+   - The Avatar Orb (`.orb-core`) used `@keyframes orbPulseSpeaking` (`scale(1)` → `scale(1.08)`), and `.orb-ring` used `@keyframes orbRingExpand` (`scale(0.9)` → `scale(1.25)`). Scaling the circle size back and forth created a continuous physical pulsating/wobbling illusion while speaking.
+   - The waveform bars used `@keyframes barScaleBounce` (`scaleY(0.15)` → `scaleY(1.0)`), adding additional dynamic visual jitter.
+2. **Fix Applied**:
+   - Replaced transform scale animations on `.orb-core` with fixed `90px` dimensions and ultra-smooth `@keyframes orbGlowSpeaking` (`box-shadow` opacity & blur pulse only).
+   - Replaced expanding ring scales with stationary `@keyframes orbRingFade` opacity pulses.
+   - Replaced waveform height/scale bounces with fixed-height `18px` stationary `@keyframes barOpacityWave` opacity flows.
+   - Result: **100% stationary UI geometry with zero physical movement, jitter, or wobbling.**
+   - Pushed commit `47a29c7` to `origin/main`.
+
+**📁 Files Modified:**
+- [`frontend/src/styles/index.css`](file:///d:/vibecodathon/frontend/src/styles/index.css) — Replaced all scale/expand animations with fixed-size opacity wave and box-shadow glow.
+- [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 38 session log.
+
 ---
 
-*Last updated: 2026-08-09 11:28 IST · Total prompts logged: 37*
+*Last updated: 2026-08-09 11:43 IST · Total prompts logged: 38*
+
 
 
 
