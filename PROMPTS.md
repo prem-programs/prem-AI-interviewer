@@ -30,7 +30,7 @@
 | **Project**        | prem-AI-interviewer                            |
 | **Hackathon**      | Vibecodathon                                   |
 | **Session Date**   | 2026-08-07                                     |
-| **Total Prompts**  | 31 *(updated as session progresses)*           |
+| **Total Prompts**  | 32 *(updated as session progresses)*           |
 | **AI Model**       | Gemini 3.6 Flash (High) via Antigravity         |
 | **Workspace**      | `d:\vibecodathon`                              |
 
@@ -810,9 +810,31 @@ INIT → GREETING → Q1 → EVAL → [FOLLOW_UP | NEXT_TOPIC] → ... → MIN_8
 - [`frontend/src/components/VoiceInterviewChat.jsx`](file:///d:/vibecodathon/frontend/src/components/VoiceInterviewChat.jsx) — Removed dynamic mic button scale transform.
 - [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 31 session log.
 
+### Prompt 32 — Fix Speech STT Multipart Format (`BytesIO` + MIME-type) & Pre-Allocate Layout Min-Height
+
+**🕐 Timestamp:** 2026-08-09 10:30 IST
+
+**👤 User Prompt:**
+> "Why is still not working and also still wobbling"
+
+**🤖 AI Implementation:**
+1. **STT Audio Payload Multipart Fix**:
+   - Updated `transcribe_audio()` in [`backend/agent/stt_service.py`](file:///d:/vibecodathon/backend/agent/stt_service.py) to wrap raw audio bytes into `io.BytesIO(audio_bytes)` with explicit content-type (`audio/webm`, `audio/wav`, or `audio/mp4`).
+   - Updated [`useVoicePipeline.js`](file:///d:/vibecodathon/frontend/src/hooks/useVoicePipeline.js) to pass matching recording filenames (`recording.webm`, `recording.mp4`, `recording.wav`) based on browser `MediaRecorder` support.
+2. **Zero Layout Shift / Wobble**:
+   - Pre-allocated `minHeight: 24px` for the **Modules Covered** section in [`VoiceInterviewChat.jsx`](file:///d:/vibecodathon/frontend/src/components/VoiceInterviewChat.jsx).
+   - Prevents the right transcript panel from layout jumping when topic badges are added during evaluation turns.
+
+**📁 Files Modified:**
+- [`backend/agent/stt_service.py`](file:///d:/vibecodathon/backend/agent/stt_service.py) — Enforced `io.BytesIO` and explicit content-type tuples.
+- [`frontend/src/hooks/useVoicePipeline.js`](file:///d:/vibecodathon/frontend/src/hooks/useVoicePipeline.js) — Passed extension matching MediaRecorder mimeType.
+- [`frontend/src/components/VoiceInterviewChat.jsx`](file:///d:/vibecodathon/frontend/src/components/VoiceInterviewChat.jsx) — Pre-allocated minHeight for Modules Covered section.
+- [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 32 session log.
+
 ---
 
-*Last updated: 2026-08-09 10:16 IST · Total prompts logged: 31*
+*Last updated: 2026-08-09 10:31 IST · Total prompts logged: 32*
+
 
 
 

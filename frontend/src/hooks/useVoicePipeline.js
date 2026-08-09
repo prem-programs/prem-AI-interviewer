@@ -82,8 +82,8 @@ export function useVoicePipeline({ onTranscriptFinal, initialVoice = 'alba' }) {
   }, [cleanupAudioHardware]);
 
   // ─── Backend Audio STT Transcription Function ────────────────────────────
-  const sendAudioBlobForSTT = useCallback(async (blob) => {
-    if (!blob || blob.size < 1000) {
+  const sendAudioBlobForSTT = useCallback(async (blob, filename = 'recording.webm') => {
+    if (!blob || blob.size < 200) {
       setError('Recording was too short. Please tap mic, speak your technical answer, then tap again to submit.');
       setVoiceState('IDLE');
       cleanupAudioHardware();
@@ -96,7 +96,7 @@ export function useVoicePipeline({ onTranscriptFinal, initialVoice = 'alba' }) {
 
     try {
       const formData = new FormData();
-      formData.append('file', blob, 'recording.webm');
+      formData.append('file', blob, filename);
 
       const res = await fetch(`${API_BASE_URL}/api/voice/transcribe`, {
         method: 'POST',
@@ -188,8 +188,9 @@ export function useVoicePipeline({ onTranscriptFinal, initialVoice = 'alba' }) {
       };
 
       recorder.onstop = () => {
+        const ext = mimeType.includes('mp4') ? 'mp4' : mimeType.includes('wav') ? 'wav' : 'webm';
         const audioBlob = new Blob(audioChunksRef.current, { type: mimeType || 'audio/webm' });
-        sendAudioBlobForSTT(audioBlob);
+        sendAudioBlobForSTT(audioBlob, `recording.${ext}`);
       };
 
       recorder.start(250);

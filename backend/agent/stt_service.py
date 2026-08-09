@@ -53,12 +53,22 @@ class STTService:
             print(f"[STT] Audio payload too small ({len(audio_bytes) if audio_bytes else 0} bytes), skipping transcription.")
             return ""
 
+        ext = os.path.splitext(filename)[1].lower() if filename else ".webm"
+        if ext in [".mp4", ".m4a"]:
+            content_type = "audio/mp4"
+        elif ext == ".wav":
+            content_type = "audio/wav"
+        elif ext == ".ogg":
+            content_type = "audio/ogg"
+        else:
+            content_type = "audio/webm"
+
         groq_client = self._get_groq_client()
         if groq_client:
             # Try Groq whisper-large-v3-turbo model
             for model_name in ["whisper-large-v3-turbo", "whisper-large-v3"]:
                 try:
-                    audio_file = (filename, audio_bytes)
+                    audio_file = (filename, io.BytesIO(audio_bytes), content_type)
                     transcription = groq_client.audio.transcriptions.create(
                         file=audio_file,
                         model=model_name,
@@ -66,7 +76,7 @@ class STTService:
                         temperature=0.0
                     )
                     text = transcription.text.strip() if hasattr(transcription, 'text') else str(transcription).strip()
-                    if text:
+                    if text and text.lower() not in ["thank you.", "subtitles by", "amara.org", "you"]:
                         print(f"[STT] Groq ({model_name}) transcribed ({len(audio_bytes)} bytes) -> '{text}'")
                         return text
                 except Exception as e:
@@ -75,7 +85,7 @@ class STTService:
         openai_client = self._get_openai_client()
         if openai_client:
             try:
-                audio_file = (filename, audio_bytes)
+                audio_file = (filename, io.BytesIO(audio_bytes), content_type)
                 transcription = openai_client.audio.transcriptions.create(
                     file=audio_file,
                     model="whisper-1",

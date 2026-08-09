@@ -422,13 +422,13 @@ export default function VoiceInterviewChat({
         </div>
 
         {/* Topics covered */}
-        {meta?.topicsCovered?.length > 0 && (
-          <div style={{ marginTop:'0.75rem', paddingTop:'0.75rem', borderTop:'1px solid var(--border-subtle)', flexShrink: 0 }}>
-            <div style={{ fontSize:'0.7rem', color:'var(--text-muted)', fontWeight:600, marginBottom:'0.4rem', textTransform:'uppercase', letterSpacing:'0.05em' }}>
-              Modules Covered
-            </div>
-            <div style={{ display:'flex', flexWrap:'wrap', gap:'0.3rem' }}>
-              {meta.topicsCovered.map((t, i) => (
+        <div style={{ marginTop:'0.75rem', paddingTop:'0.75rem', borderTop:'1px solid var(--border-subtle)', flexShrink: 0 }}>
+          <div style={{ fontSize:'0.7rem', color:'var(--text-muted)', fontWeight:600, marginBottom:'0.4rem', textTransform:'uppercase', letterSpacing:'0.05em' }}>
+            Modules Covered ({meta?.topicsCovered?.length || 0}/8)
+          </div>
+          <div style={{ display:'flex', flexWrap:'wrap', gap:'0.3rem', minHeight: '24px', alignItems: 'center' }}>
+            {meta?.topicsCovered && meta.topicsCovered.length > 0 ? (
+              meta.topicsCovered.map((t, i) => (
                 <span key={i} style={{
                   display:'flex', alignItems:'center', gap:'0.25rem',
                   fontSize:'0.69rem', background:'rgba(56,189,248,0.08)',
@@ -436,10 +436,14 @@ export default function VoiceInterviewChat({
                 }}>
                   <CheckCircle2 size={10}/> {t}
                 </span>
-              ))}
-            </div>
+              ))
+            ) : (
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-subtle)', fontStyle: 'italic' }}>
+                Evaluation in progress...
+              </span>
+            )}
           </div>
-        )}
+        </div>
 
         {/* Text response fallback input */}
         <form onSubmit={handleManualSubmit} style={{ marginTop:'0.75rem', paddingTop:'0.75rem', borderTop:'1px solid var(--border-subtle)', display:'flex', gap:'0.4rem', flexShrink:0 }}>
