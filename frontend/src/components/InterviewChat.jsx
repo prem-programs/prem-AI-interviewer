@@ -180,7 +180,12 @@ export default function InterviewChat({ candidate, onBackToCandidates, onIntervi
 
 
   return (
-    <div className="chat-container">
+    <div className="chat-container" style={{
+      height: 'calc(100vh - 130px)',
+      maxHeight: '640px',
+      minHeight: '480px',
+      overflow: 'hidden'
+    }}>
       <VoiceSetup
         isOpen={showVoiceSetup}
         onClose={() => setShowVoiceSetup(false)}
@@ -189,7 +194,14 @@ export default function InterviewChat({ candidate, onBackToCandidates, onIntervi
       />
 
       {/* Sidebar Metadata */}
-      <div className="sidebar-panel">
+      <div className="sidebar-panel" style={{
+        height: '100%',
+        maxHeight: '100%',
+        minHeight: 0,
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
         <button
           onClick={onBackToCandidates}
           style={{
@@ -200,13 +212,14 @@ export default function InterviewChat({ candidate, onBackToCandidates, onIntervi
             display: 'flex',
             alignItems: 'center',
             gap: '0.4rem',
-            fontSize: '0.85rem'
+            fontSize: '0.85rem',
+            flexShrink: 0
           }}
         >
           <ChevronLeft size={16} /> Back to Candidates
         </button>
 
-        <div style={{ padding: '0.75rem', background: 'rgba(15, 23, 42, 0.6)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+        <div style={{ padding: '0.75rem', background: 'rgba(15, 23, 42, 0.6)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)', flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
             <div className="candidate-avatar" style={{ width: 40, height: 40, fontSize: '0.95rem' }}>
               {candidate.member.name.split(' ').map(n => n[0]).join('')}
@@ -224,15 +237,15 @@ export default function InterviewChat({ candidate, onBackToCandidates, onIntervi
         </div>
 
         {/* Progress Tracker */}
-        <div>
+        <div style={{ flexShrink: 0 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: '0.4rem' }}>
             <span style={{ color: 'var(--text-muted)' }}>Main Questions</span>
-            <span style={{ fontWeight: 700, color: 'var(--primary)' }}>{currentMainQ} / 5</span>
+            <span style={{ fontWeight: 700, color: 'var(--primary)' }}>{currentMainQ} / 8</span>
           </div>
           <div style={{ height: 6, background: 'rgba(255,255,255,0.1)', borderRadius: 3, overflow: 'hidden' }}>
             <div
               style={{
-                width: `${Math.min((currentMainQ / 5) * 100, 100)}%`,
+                width: `${Math.min((currentMainQ / 8) * 100, 100)}%`,
                 height: '100%',
                 background: 'linear-gradient(90deg, var(--primary), var(--secondary))',
                 transition: 'width 0.3s ease'
@@ -242,13 +255,13 @@ export default function InterviewChat({ candidate, onBackToCandidates, onIntervi
         </div>
 
         {/* Modules Covered List */}
-        <div>
-          <div style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+        <div style={{ flex: 1, minHeight: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem', flexShrink: 0 }}>
             Modules Covered ({meta.topicsCovered?.length || 0}/8)
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', maxHeight: 200, overflowY: 'auto' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', flex: 1, minHeight: 0, overflowY: 'auto', paddingRight: '0.2rem' }}>
             {meta.topicsCovered?.map((topic, i) => (
-              <div key={i} style={{ fontSize: '0.78rem', background: 'rgba(56, 189, 248, 0.1)', padding: '0.35rem 0.6rem', borderRadius: 6, color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <div key={i} style={{ fontSize: '0.78rem', background: 'rgba(56, 189, 248, 0.1)', padding: '0.35rem 0.6rem', borderRadius: 6, color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '0.4rem', flexShrink: 0 }}>
                 <CheckCircle2 size={13} /> {topic}
               </div>
             ))}
@@ -259,7 +272,8 @@ export default function InterviewChat({ candidate, onBackToCandidates, onIntervi
           onClick={handleWrapUp}
           disabled={loading}
           style={{
-            marginTop: 'auto',
+            flexShrink: 0,
+            marginTop: '0.75rem',
             background: 'rgba(244, 63, 94, 0.15)',
             border: '1px solid rgba(244, 63, 94, 0.4)',
             color: 'var(--accent-rose)',

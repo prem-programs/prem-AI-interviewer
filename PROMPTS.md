@@ -30,7 +30,7 @@
 | **Project**        | prem-AI-interviewer                            |
 | **Hackathon**      | Vibecodathon                                   |
 | **Session Date**   | 2026-08-07                                     |
-| **Total Prompts**  | 28 *(updated as session progresses)*           |
+| **Total Prompts**  | 30 *(updated as session progresses)*           |
 | **AI Model**       | Gemini 3.6 Flash (High) via Antigravity         |
 | **Workspace**      | `d:\vibecodathon`                              |
 
@@ -754,9 +754,47 @@ INIT → GREETING → Q1 → EVAL → [FOLLOW_UP | NEXT_TOPIC] → ... → MIN_8
 - [`frontend/src/components/VoiceInterviewChat.jsx`](file:///d:/vibecodathon/frontend/src/components/VoiceInterviewChat.jsx) — Locked Voice Mode container to matching fixed height.
 - [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 28 session log.
 
+### Prompt 29 — Stop Sidebar & Chat Container Height Growth as Module Badges Accumulate
+
+**🕐 Timestamp:** 2026-08-09 10:13 IST
+
+**👤 User Prompt:**
+> "still after 3 questions its is growing stop that" (with screenshot showing sidebar module badges expanding height)
+
+**🤖 AI Implementation:**
+1. **Root Cause Analysis**: As the candidate answered technical questions and `meta.topicsCovered` grew (from 1 to 3+ module badges), the `Modules Covered` list expanded vertically. Because the sidebar elements lacked explicit flex-shrink and height bounds, the growing list pushed the sidebar height and expanded `.chat-container`.
+2. **Fix Applied**:
+   - Updated [`InterviewChat.jsx`](file:///d:/vibecodathon/frontend/src/components/InterviewChat.jsx).
+   - Set `flexShrink: 0` on all fixed sidebar children (candidate profile header, question progress tracker, back button, finish button).
+   - Constrained the **Modules Covered** list to `flex: 1; minHeight: 0; overflowY: auto;` so accumulating module badges scroll internally inside the list instead of stretching the sidebar.
+   - Enforced explicit inline `height: calc(100vh - 130px); maxHeight: 640px; minHeight: 480px; overflow: hidden;` directly on `.chat-container`.
+
+**📁 Files Modified:**
+- [`frontend/src/components/InterviewChat.jsx`](file:///d:/vibecodathon/frontend/src/components/InterviewChat.jsx) — Set `flexShrink: 0` and `overflowY: auto` on sidebar module list.
+- [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 29 session log.
+
+### Prompt 30 — Update Main Questions Progress Tracker Denominator from 5 to 8
+
+**🕐 Timestamp:** 2026-08-09 10:14 IST
+
+**👤 User Prompt:**
+> "fix that 5 numbers replace with 8" (with screenshot showing Main Questions 6 / 5)
+
+**🤖 AI Implementation:**
+1. **Fix Applied**:
+   - Updated [`InterviewChat.jsx`](file:///d:/vibecodathon/frontend/src/components/InterviewChat.jsx).
+   - Replaced hardcoded `{currentMainQ} / 5` with `{currentMainQ} / 8` to match the 8 curriculum modules (`Modules Covered 6/8`).
+   - Updated progress bar width calculation to `(currentMainQ / 8) * 100`.
+
+**📁 Files Modified:**
+- [`frontend/src/components/InterviewChat.jsx`](file:///d:/vibecodathon/frontend/src/components/InterviewChat.jsx) — Updated progress denominator and progress bar calculation to `/ 8`.
+- [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 30 session log.
+
 ---
 
-*Last updated: 2026-08-09 10:01 IST · Total prompts logged: 28*
+*Last updated: 2026-08-09 10:15 IST · Total prompts logged: 30*
+
+
 
 
 
