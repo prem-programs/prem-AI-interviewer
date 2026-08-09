@@ -30,7 +30,7 @@
 | **Project**        | prem-AI-interviewer                            |
 | **Hackathon**      | Vibecodathon                                   |
 | **Session Date**   | 2026-08-07                                     |
-| **Total Prompts**  | 38 *(updated as session progresses)*           |
+| **Total Prompts**  | 39 *(updated as session progresses)*           |
 | **AI Model**       | Gemini 3.6 Flash (High) via Antigravity         |
 | **Workspace**      | `d:\vibecodathon`                              |
 
@@ -953,9 +953,30 @@ INIT → GREETING → Q1 → EVAL → [FOLLOW_UP | NEXT_TOPIC] → ... → MIN_8
 - [`frontend/src/styles/index.css`](file:///d:/vibecodathon/frontend/src/styles/index.css) — Replaced all scale/expand animations with fixed-size opacity wave and box-shadow glow.
 - [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 38 session log.
 
+### Prompt 39 — Increase Voice TTS Speed to Natural 1.15x Human Pace
+
+**🕐 Timestamp:** 2026-08-09 13:30 IST
+
+**👤 User Prompt:**
+> "please make voice tts bit faster in normal human pace it is bit slow"
+
+**🤖 AI Implementation:**
+1. **TTS Playback Speed Increase**:
+   - Set `audio.playbackRate = 1.15` in [`useVoicePipeline.js`](file:///d:/vibecodathon/frontend/src/hooks/useVoicePipeline.js) for audio chunk playback.
+   - Set `utterance.rate = 1.15` for Web Speech API fallback speech synthesis.
+   - Reduced fallback audio duration per word from `0.28s` to `0.20s` in [`tts_service.py`](file:///d:/vibecodathon/backend/agent/tts_service.py).
+   - Result: **Natural, crisp, conversational human speech pace with zero inter-sentence delays.**
+   - Pushed commit `dc483a9` to `origin/main`.
+
+**📁 Files Modified:**
+- [`frontend/src/hooks/useVoicePipeline.js`](file:///d:/vibecodathon/frontend/src/hooks/useVoicePipeline.js) — Enforced 1.15x playback rate on audio elements and utterances.
+- [`backend/agent/tts_service.py`](file:///d:/vibecodathon/backend/agent/tts_service.py) — Sped up fallback speech timing.
+- [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 39 session log.
+
 ---
 
-*Last updated: 2026-08-09 11:43 IST · Total prompts logged: 38*
+*Last updated: 2026-08-09 13:31 IST · Total prompts logged: 39*
+
 
 
 
