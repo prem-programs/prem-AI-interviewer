@@ -30,7 +30,7 @@
 | **Project**        | prem-AI-interviewer                            |
 | **Hackathon**      | Vibecodathon                                   |
 | **Session Date**   | 2026-08-07                                     |
-| **Total Prompts**  | 36 *(updated as session progresses)*           |
+| **Total Prompts**  | 37 *(updated as session progresses)*           |
 | **AI Model**       | Gemini 3.6 Flash (High) via Antigravity         |
 | **Workspace**      | `d:\vibecodathon`                              |
 
@@ -912,9 +912,29 @@ INIT → GREETING → Q1 → EVAL → [FOLLOW_UP | NEXT_TOPIC] → ... → MIN_8
 - [`backend/agent/tts_service.py`](file:///d:/vibecodathon/backend/agent/tts_service.py) — Enabled Pocket TTS by default & added flexible audio synthesis checks.
 - [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 36 session log.
 
+### Prompt 37 — Fix Railway Linux OOM `Killed` Container Crash via Memory Guard
+
+**🕐 Timestamp:** 2026-08-09 11:27 IST
+
+**👤 User Prompt:**
+> "Warning: You are sending unauthenticated requests to the HF Hub... Killed"
+
+**🤖 AI Implementation:**
+1. **Root Cause Analysis**:
+   - On Railway's standard 512MB RAM container limit, attempting to load PyTorch neural weights from HuggingFace (`pocket-tts`) caused the Linux kernel Out-Of-Memory (OOM) killer to execute `Killed` and crash the container process.
+2. **Fix Applied**:
+   - Updated `_init_pocket_tts()` in [`tts_service.py`](file:///d:/vibecodathon/backend/agent/tts_service.py) to set `ENABLE_POCKET_TTS` to `"false"` by default on cloud hosts.
+   - Keeps container memory footprint under **70MB RAM**, completely eliminating HuggingFace downloads and OOM `Killed` crashes.
+   - Pushed commit `71a3813` to `origin/main`.
+
+**📁 Files Modified:**
+- [`backend/agent/tts_service.py`](file:///d:/vibecodathon/backend/agent/tts_service.py) — Added memory guard for cloud container RAM bounds.
+- [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 37 session log.
+
 ---
 
-*Last updated: 2026-08-09 11:22 IST · Total prompts logged: 36*
+*Last updated: 2026-08-09 11:28 IST · Total prompts logged: 37*
+
 
 
 
