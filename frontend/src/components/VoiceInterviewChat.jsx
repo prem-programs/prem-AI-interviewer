@@ -106,10 +106,11 @@ export default function VoiceInterviewChat({
     <div style={{
       display: 'grid',
       gridTemplateColumns: '1fr 340px',
-      gap: '1rem',
-      height: 'calc(100vh - 120px)',
-      maxHeight: '780px',
+      gap: '1.25rem',
+      height: '100%',
+      maxHeight: '100%',
       minHeight: '0',
+      flex: 1,
       overflow: 'hidden'
     }}>
       {/* ── Left: Voice Stage ── */}
@@ -117,14 +118,15 @@ export default function VoiceInterviewChat({
         background: 'radial-gradient(circle at 50% 35%, rgba(20,30,55,0.98), rgba(9,13,22,1))',
         border: '1px solid var(--border-subtle)',
         borderRadius: '16px',
-        padding: '1.5rem',
+        padding: '1.25rem',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'space-between',
         position: 'relative',
         overflow: 'hidden',
-        minHeight: '0'
+        minHeight: '0',
+        height: '100%'
       }}>
 
         {/* ── Top bar ── */}
@@ -423,7 +425,7 @@ export default function VoiceInterviewChat({
 
         {/* Topics covered */}
         {meta?.topicsCovered?.length > 0 && (
-          <div style={{ marginTop:'0.75rem', paddingTop:'0.75rem', borderTop:'1px solid var(--border-subtle)' }}>
+          <div style={{ marginTop:'0.75rem', paddingTop:'0.75rem', borderTop:'1px solid var(--border-subtle)', flexShrink: 0 }}>
             <div style={{ fontSize:'0.7rem', color:'var(--text-muted)', fontWeight:600, marginBottom:'0.4rem', textTransform:'uppercase', letterSpacing:'0.05em' }}>
               Modules Covered
             </div>

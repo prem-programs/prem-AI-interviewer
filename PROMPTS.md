@@ -30,7 +30,7 @@
 | **Project**        | prem-AI-interviewer                            |
 | **Hackathon**      | Vibecodathon                                   |
 | **Session Date**   | 2026-08-07                                     |
-| **Total Prompts**  | 25 *(updated as session progresses)*           |
+| **Total Prompts**  | 27 *(updated as session progresses)*           |
 | **AI Model**       | Gemini 3.6 Flash (High) via Antigravity         |
 | **Workspace**      | `d:\vibecodathon`                              |
 
@@ -698,9 +698,49 @@ INIT → GREETING → Q1 → EVAL → [FOLLOW_UP | NEXT_TOPIC] → ... → MIN_8
 - [`frontend/src/styles/index.css`](file:///d:/vibecodathon/frontend/src/styles/index.css) — Enforced strict viewport height bounds on chat layout container.
 - [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 23, 24, and 25 logs.
 
+### Prompt 26 — Fix Voice Mode Right Panel Layout Wobble & Flex-Shrink Mismatch
+
+**🕐 Timestamp:** 2026-08-09 09:54 IST
+
+**👤 User Prompt:**
+> "it is just wobbling right now" (with screenshot showing Live Transcript panel overflowing under Modules Covered)
+
+**🤖 AI Implementation:**
+1. **Root Cause Analysis**: The right Live Transcript panel (`VoiceInterviewChat.jsx`) used inline height `calc(100vh - 120px)` while `.app-container` was set to `100vh`. Additionally, the **Modules Covered** badge container and bottom text response form lacked `flexShrink: 0`, causing the middle transcript scroll area to resize dynamically as messages arrived, creating a visual layout wobble/flicker.
+2. **Layout Fix Applied**:
+   - Set root grid container in [`VoiceInterviewChat.jsx`](file:///d:/vibecodathon/frontend/src/components/VoiceInterviewChat.jsx) to `height: 100%; flex: 1; minHeight: 0;`.
+   - Added `flexShrink: 0` to both the **Modules Covered** section and the bottom text input form.
+   - Enforced `flex: 1; minHeight: 0; overflowY: auto;` on the live transcript message list so scrolling occurs smoothly without shifting or wobbling outer elements.
+
+**📁 Files Modified:**
+- [`frontend/src/components/VoiceInterviewChat.jsx`](file:///d:/vibecodathon/frontend/src/components/VoiceInterviewChat.jsx) — Fixed grid height constraints and added `flexShrink: 0` rules to static panel sections.
+- [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 26 session log.
+
+### Prompt 27 — Fix Speech-to-Text Environment Resolution & Dual Whisper Model Fallback
+
+**🕐 Timestamp:** 2026-08-09 09:55 IST
+
+**👤 User Prompt:**
+> "No speech detected in recording. Please tap mic to try again or use text input. THis is error iam getting from mic"
+
+**🤖 AI Implementation:**
+1. **Root Cause Analysis**: `STTService` in [`backend/agent/stt_service.py`](file:///d:/vibecodathon/backend/agent/stt_service.py) performed client initialization strictly once inside `__init__()` on module import. If `GROQ_API_KEY` was loaded into `os.environ` after instantiation (or loaded from `backend/.env`), `self.client` remained `None`, causing `/api/voice/transcribe` to return empty text `""`.
+2. **Fix Applied**:
+   - Refactored `stt_service.py` to dynamically check `.env` paths (`backend/.env`, root `.env`) before every transcription attempt via `_load_stt_env()`.
+   - Added Groq Whisper models failover (`whisper-large-v3-turbo` → `whisper-large-v3`).
+   - Added OpenAI Whisper model fallback (`whisper-1`) if Groq API fails.
+   - Updated [`useVoicePipeline.js`](file:///d:/vibecodathon/frontend/src/hooks/useVoicePipeline.js) with explicit audio payload size verification (> 1000 bytes) and friendly user guidance when mic taps are too brief.
+
+**📁 Files Modified:**
+- [`backend/agent/stt_service.py`](file:///d:/vibecodathon/backend/agent/stt_service.py) — Dynamic `.env` resolution & Groq/OpenAI STT failover pipeline.
+- [`frontend/src/hooks/useVoicePipeline.js`](file:///d:/vibecodathon/frontend/src/hooks/useVoicePipeline.js) — Recording payload length validation and user error messages.
+- [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 27 session log.
+
 ---
 
-*Last updated: 2026-08-09 09:52 IST · Total prompts logged: 25*
+*Last updated: 2026-08-09 09:56 IST · Total prompts logged: 27*
+
+
 
 
 

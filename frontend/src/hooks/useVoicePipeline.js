@@ -83,7 +83,8 @@ export function useVoicePipeline({ onTranscriptFinal, initialVoice = 'alba' }) {
 
   // ─── Backend Audio STT Transcription Function ────────────────────────────
   const sendAudioBlobForSTT = useCallback(async (blob) => {
-    if (!blob || blob.size < 300) {
+    if (!blob || blob.size < 1000) {
+      setError('Recording was too short. Please tap mic, speak your technical answer, then tap again to submit.');
       setVoiceState('IDLE');
       cleanupAudioHardware();
       return;
@@ -107,9 +108,10 @@ export function useVoicePipeline({ onTranscriptFinal, initialVoice = 'alba' }) {
         const transcribedText = (data.text || '').trim();
         setInterimTranscript('');
         if (transcribedText) {
+          setError(null);
           onTranscriptFinalRef.current?.(transcribedText);
         } else {
-          setError('No speech detected in recording. Please tap mic to try again or use text input.');
+          setError('No speech detected in audio. Please speak clearly into your mic or use the text input below.');
           setVoiceState('IDLE');
         }
       } else {
