@@ -30,7 +30,7 @@
 | **Project**        | prem-AI-interviewer                            |
 | **Hackathon**      | Vibecodathon                                   |
 | **Session Date**   | 2026-08-07                                     |
-| **Total Prompts**  | 39 *(updated as session progresses)*           |
+| **Total Prompts**  | 40 *(updated as session progresses)*           |
 | **AI Model**       | Gemini 3.6 Flash (High) via Antigravity         |
 | **Workspace**      | `d:\vibecodathon`                              |
 
@@ -973,9 +973,31 @@ INIT → GREETING → Q1 → EVAL → [FOLLOW_UP | NEXT_TOPIC] → ... → MIN_8
 - [`backend/agent/tts_service.py`](file:///d:/vibecodathon/backend/agent/tts_service.py) — Sped up fallback speech timing.
 - [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 39 session log.
 
+### Prompt 40 — Clean User Perspective UI & Remove Developer Technical Jargon
+
+**🕐 Timestamp:** 2026-08-09 15:34 IST
+
+**👤 User Prompt:**
+> "remove unneccessay details from user perspective"
+
+**🤖 AI Implementation:**
+1. **Clean UI Copy Refactoring**:
+   - Removed developer technical jargon (`Kyutai Pocket TTS`, `PyTorch CPU`, `24kHz WAV`, `zero external web APIs`) from the Voice Mode Setup modal in [`VoiceSetup.jsx`](file:///d:/vibecodathon/frontend/src/components/VoiceSetup.jsx).
+   - Replaced subtitle with **Interactive Speech-to-Speech Experience**.
+   - Replaced voice model section with **Interviewer Voice Persona** and **Choose your preferred AI voice style**.
+   - Replaced status tag with **High-definition natural voice audio**.
+   - Replaced internal processing text `Transcribing audio via Whisper...` with **Processing your voice answer...** in [`useVoicePipeline.js`](file:///d:/vibecodathon/frontend/src/hooks/useVoicePipeline.js).
+   - Pushed commit `3c5bd94` to `origin/main`.
+
+**📁 Files Modified:**
+- [`frontend/src/components/VoiceSetup.jsx`](file:///d:/vibecodathon/frontend/src/components/VoiceSetup.jsx) — Replaced technical engine jargon with clean user copy.
+- [`frontend/src/hooks/useVoicePipeline.js`](file:///d:/vibecodathon/frontend/src/hooks/useVoicePipeline.js) — Replaced internal engine status string.
+- [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 40 session log.
+
 ---
 
-*Last updated: 2026-08-09 13:31 IST · Total prompts logged: 39*
+*Last updated: 2026-08-09 15:35 IST · Total prompts logged: 40*
+
 
 
 
