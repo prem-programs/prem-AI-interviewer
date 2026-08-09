@@ -30,7 +30,7 @@
 | **Project**        | prem-AI-interviewer                            |
 | **Hackathon**      | Vibecodathon                                   |
 | **Session Date**   | 2026-08-07                                     |
-| **Total Prompts**  | 32 *(updated as session progresses)*           |
+| **Total Prompts**  | 33 *(updated as session progresses)*           |
 | **AI Model**       | Gemini 3.6 Flash (High) via Antigravity         |
 | **Workspace**      | `d:\vibecodathon`                              |
 
@@ -831,9 +831,30 @@ INIT → GREETING → Q1 → EVAL → [FOLLOW_UP | NEXT_TOPIC] → ... → MIN_8
 - [`frontend/src/components/VoiceInterviewChat.jsx`](file:///d:/vibecodathon/frontend/src/components/VoiceInterviewChat.jsx) — Pre-allocated minHeight for Modules Covered section.
 - [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 32 session log.
 
+### Prompt 33 — Lock Reserved 42px Feedback Container & Synchronize Viewport Heights
+
+**🕐 Timestamp:** 2026-08-09 10:52 IST
+
+**👤 User Prompt:**
+> "Why is still not working and also still wobbling" / "still no changes still wobbling"
+
+**🤖 AI Implementation:**
+1. **Root Cause Analysis**:
+   - In `VoiceInterviewChat.jsx`, the center stage used `margin: 'auto 0'`. Whenever `interimTranscript` or `voiceError` appeared/disappeared, the flex container height grew by 35px-70px, causing browser flex re-centering that dynamically bounced the Avatar Orb, Waveform, and Mic Button up and down.
+   - Container height mismatch: `VoiceInterviewChat` used `maxHeight: 680px` while `InterviewChat` used `maxHeight: 640px`, causing a 40px vertical layout jump when toggling Voice Mode.
+2. **Fixes Applied & Pushed to GitHub**:
+   - Wrapped `interimTranscript` and `voiceError` inside a pre-allocated fixed `42px` feedback container (`<div style={{ height: '42px', ... }}>`). The Orb, Waveform, and Mic Button now stay 100% stationary with **zero vertical bounce**.
+   - Synchronized root container height in [`VoiceInterviewChat.jsx`](file:///d:/vibecodathon/frontend/src/components/VoiceInterviewChat.jsx) to match `InterviewChat.jsx` (`height: calc(100vh - 130px); maxHeight: 640px; minHeight: 480px`).
+   - Committed and pushed commit `961a0e8` to `origin/main` for live Railway deployment.
+
+**📁 Files Modified:**
+- [`frontend/src/components/VoiceInterviewChat.jsx`](file:///d:/vibecodathon/frontend/src/components/VoiceInterviewChat.jsx) — Locked feedback area to fixed 42px height & matched text mode height.
+- [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 33 session log.
+
 ---
 
-*Last updated: 2026-08-09 10:31 IST · Total prompts logged: 32*
+*Last updated: 2026-08-09 10:55 IST · Total prompts logged: 33*
+
 
 
 
