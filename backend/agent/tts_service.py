@@ -10,10 +10,10 @@ class TTSService:
         self._init_pocket_tts()
 
     def _init_pocket_tts(self):
-        # Default ENABLE_POCKET_TTS to true so Pocket TTS initializes whenever package is installed
-        enable_pocket = os.getenv("ENABLE_POCKET_TTS", "true").lower() in ("true", "1", "yes")
+        # Memory-Optimized Cloud Guard: On 512MB RAM containers (Railway/Render), skip heavy PyTorch weights unless explicitly enabled via ENABLE_POCKET_TTS=true
+        enable_pocket = os.getenv("ENABLE_POCKET_TTS", "false").lower() in ("true", "1", "yes")
         if not enable_pocket:
-            print("[TTS] Cloud/Memory-optimized mode: Web Browser TTS active (Memory < 70MB).")
+            print("[TTS] Memory-Optimized Cloud Mode active (Memory < 70MB). Web Browser TTS active.")
             return
 
         try:
