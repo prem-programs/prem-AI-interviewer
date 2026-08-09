@@ -30,7 +30,7 @@
 | **Project**        | prem-AI-interviewer                            |
 | **Hackathon**      | Vibecodathon                                   |
 | **Session Date**   | 2026-08-07                                     |
-| **Total Prompts**  | 35 *(updated as session progresses)*           |
+| **Total Prompts**  | 36 *(updated as session progresses)*           |
 | **AI Model**       | Gemini 3.6 Flash (High) via Antigravity         |
 | **Workspace**      | `d:\vibecodathon`                              |
 
@@ -892,9 +892,30 @@ INIT → GREETING → Q1 → EVAL → [FOLLOW_UP | NEXT_TOPIC] → ... → MIN_8
 - [`backend/agent/stt_service.py`](file:///d:/vibecodathon/backend/agent/stt_service.py) — Cleaned STT API key strings.
 - [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 35 session log.
 
+### Prompt 36 — Enable Pocket TTS Neural Synthesis Engine by Default & Add API Methods
+
+**🕐 Timestamp:** 2026-08-09 11:21 IST
+
+**👤 User Prompt:**
+> "There is issue with talking with pocket tts"
+
+**🤖 AI Implementation:**
+1. **Root Cause Analysis**:
+   - In [`tts_service.py`](file:///d:/vibecodathon/backend/agent/tts_service.py), `ENABLE_POCKET_TTS` environment flag defaulted to `"false"`. Unless explicitly set to `ENABLE_POCKET_TTS=true`, Pocket TTS PyTorch neural model initialization was skipped and fell back to synthetic tones / browser speech synthesis.
+2. **Fixes Applied**:
+   - Updated `_init_pocket_tts()` in [`tts_service.py`](file:///d:/vibecodathon/backend/agent/tts_service.py) to default `ENABLE_POCKET_TTS` to `"true"`, initializing PyTorch INT8 Pocket TTS whenever the package is installed.
+   - Added checks for `generate_audio` and `synthesize` methods on `TTSModel`.
+   - Installed `pocket-tts` (v2.1.0) and `torch` (v2.13.0) in Python environment.
+   - Committed `8048cce` and pushed to `origin/main` for live Railway deployment.
+
+**📁 Files Modified:**
+- [`backend/agent/tts_service.py`](file:///d:/vibecodathon/backend/agent/tts_service.py) — Enabled Pocket TTS by default & added flexible audio synthesis checks.
+- [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 36 session log.
+
 ---
 
-*Last updated: 2026-08-09 11:13 IST · Total prompts logged: 35*
+*Last updated: 2026-08-09 11:22 IST · Total prompts logged: 36*
+
 
 
 
