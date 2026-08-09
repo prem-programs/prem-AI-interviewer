@@ -107,9 +107,9 @@ export default function VoiceInterviewChat({
       display: 'grid',
       gridTemplateColumns: '1fr 340px',
       gap: '1.25rem',
-      height: 'calc(100vh - 140px)',
-      maxHeight: '680px',
-      minHeight: '500px',
+      height: 'calc(100vh - 130px)',
+      maxHeight: '640px',
+      minHeight: '480px',
       flex: 1,
       overflow: 'hidden'
     }}>
@@ -166,7 +166,7 @@ export default function VoiceInterviewChat({
         </div>
 
         {/* ── Center: Orb + Status + Waveform ── */}
-        <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:'1.25rem', margin:'auto 0' }}>
+        <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:'1rem', margin:'auto 0' }}>
 
           {/* Animated Orb */}
           <div className={`voice-orb ${voiceState.toLowerCase()}`} onClick={autoplayBlocked ? unlockAudio : undefined} style={{ cursor: autoplayBlocked ? 'pointer' : 'default' }}>
@@ -220,27 +220,26 @@ export default function VoiceInterviewChat({
             ))}
           </div>
 
-          {/* Interim transcript */}
-          {interimTranscript && (
-            <div style={{
-              fontSize:'0.85rem', color:'#f59e0b', fontStyle:'italic',
-              maxWidth:'380px', textAlign:'center', lineHeight:1.4
-            }}>
-              "{interimTranscript}"
-            </div>
-          )}
-
-          {/* Browser / Mic error */}
-          {voiceError && (
-            <div style={{
-              display:'flex', alignItems:'center', gap:'0.5rem',
-              fontSize:'0.79rem', color:'#f87171',
-              background:'rgba(248,113,113,0.08)', border:'1px solid rgba(248,113,113,0.25)',
-              padding:'0.5rem 0.9rem', borderRadius:'8px', maxWidth:360, textAlign:'center'
-            }}>
-              <AlertCircle size={14}/> {voiceError}
-            </div>
-          )}
+          {/* Fixed Height Feedback Reserved Area (Zero Wobble) */}
+          <div style={{ height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '320px' }}>
+            {interimTranscript ? (
+              <div style={{
+                fontSize:'0.85rem', color:'#f59e0b', fontStyle:'italic',
+                maxWidth:'380px', textAlign:'center', lineHeight:1.3
+              }}>
+                "{interimTranscript}"
+              </div>
+            ) : voiceError ? (
+              <div style={{
+                display:'flex', alignItems:'center', gap:'0.5rem',
+                fontSize:'0.78rem', color:'#f87171',
+                background:'rgba(248,113,113,0.08)', border:'1px solid rgba(248,113,113,0.25)',
+                padding:'0.4rem 0.8rem', borderRadius:'8px', maxWidth:360, textAlign:'center'
+              }}>
+                <AlertCircle size={14}/> {voiceError}
+              </div>
+            ) : null}
+          </div>
 
         </div>
 
