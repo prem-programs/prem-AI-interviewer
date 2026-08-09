@@ -15,14 +15,17 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
+# Load environment variables from .env before importing routers
+load_dotenv(os.path.join(file_dir, ".env"))
+load_dotenv(os.path.join(root_dir, ".env"))
+load_dotenv()
+
 try:
     from backend.router import router
     from backend.voice_router import voice_router
 except ModuleNotFoundError:
     from router import router
     from voice_router import voice_router
-
-load_dotenv()
 
 app = FastAPI(
     title="AI Technical Interview Agent",
