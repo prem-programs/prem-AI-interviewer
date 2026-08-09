@@ -1,4 +1,4 @@
-# 🤖 prem-AI-interviewer — Adaptive Real-Time AI Technical Interviewer
+# AI-interviewer — Adaptive Real-Time AI Technical Interviewer
 
 [![Vibecodathon 2026](https://img.shields.io/badge/Hackathon-Vibecodathon%202026-blueviolet?style=for-the-badge)](https://github.com/)
 [![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
@@ -10,32 +10,32 @@ An intelligent, speech-to-speech and text-based **AI Technical Interview System*
 
 ---
 
-## ⚡ Why We Stand Out (Core Strengths & Highlights)
+## Why We Stand Out (Core Strengths & Highlights)
 
-### 1. 🚀 Lightning-Fast Sub-Second Response Latency
+### 1. Lightning-Fast Sub-Second Response Latency
 - **Groq LPU Acceleration**: Powered by Groq's high-speed Language Processing Units running `llama-3.3-70b-versatile` and `llama-3.1-8b-instant` at **~500–1000 tokens/sec**.
 - **Real-Time Human-Like Conversational Flow**: Delivers instantaneous follow-ups without awkward multi-second waiting times typical of standard cloud APIs.
 
-### 2. 🎙️ Native Speech-to-Speech Voice Experience
+### 2. Native Speech-to-Speech Voice Experience
 - **CPU-Native High-Performance TTS**: Integrates **Kyutai Pocket TTS** yielding raw PCM audio frames over WebSockets in **~200ms**, eliminating external paid voice SaaS dependencies.
 - **Browser Speech-to-Text (STT)**: Native Web Speech API integration for hands-free speech recognition with live interim visual transcription.
 - **Voice Cloning Capabilities**: Allows uploading a 5-second reference sample (`/api/voice/upload-voice-sample`) to clone dynamic interviewer voice personalities.
 - **Interactive Audio Visualizer**: Features a glowing state-aware AI orb avatar and canvas-rendered Web Audio API frequency waveform analyzer (`AnalyserNode`).
 
-### 3. 🛡️ Multi-Model Automatic Failover (Zero-Downtime Reliability)
+### 3. Multi-Model Automatic Failover (Zero-Downtime Reliability)
 - Built-in multi-tier fallback mechanism preventing rate-limit crashes during heavy usage:
   $$\text{Groq LLaMA 3.3 70B} \longrightarrow \text{Groq LLaMA 3.1 8B Instant} \longrightarrow \text{Groq LLaMA 3.2} \longrightarrow \text{OpenAI GPT-4o-mini} \longrightarrow \text{Dynamic Rule Engine}$$
 - Automatically detects `429 Rate Limit` or quota bounds and seamlessly shifts models mid-interview without interrupting the candidate.
 
-### 4. 🧠 Adaptive Curriculum-Aware Questioning Engine
+### 4. Adaptive Curriculum-Aware Questioning Engine
 - Fully mapped against the **31-Day AI Cohort Curriculum** (8 core modules ranging from vector databases to agentic workflows & deployment).
 - **Dynamic Difficulty Adaptation**:
-  - 🟡 *Shallow/Incomplete Answer* $\rightarrow$ Deep-dive probing on missing concepts.
-  - 🟢 *Solid Answer* $\rightarrow$ Harder conceptual challenge on the same topic.
-  - 🌟 *Exceptional Answer* $\rightarrow$ Fast-tracks the candidate to the next curriculum module.
+  - *Shallow/Incomplete Answer* $\rightarrow$ Deep-dive probing on missing concepts.
+  - *Solid Answer* $\rightarrow$ Harder conceptual challenge on the same topic.
+  - *Exceptional Answer* $\rightarrow$ Fast-tracks the candidate to the next curriculum module.
 - Tracks question count, days covered, and topic depth to ensure holistic evaluation (minimum 8 questions across 4+ curriculum days).
 
-### 5. 📊 Real-Time Candidate Scoring & Feedback Generation
+### 5. Real-Time Candidate Scoring & Feedback Generation
 - Parses candidate background, past missions, experience, and completed projects.
 - Automatically generates an end-of-interview report containing:
   - Comprehensive performance summary
@@ -43,13 +43,13 @@ An intelligent, speech-to-speech and text-based **AI Technical Interview System*
   - Modular scorecard matching curriculum days
   - Customized action plan & study recommendations
 
-### 6. 💎 Modern Glassmorphism UI & Visual Excellence
+### 6. Modern Glassmorphism UI & Visual Excellence
 - Built with custom Vanilla CSS variables, high contrast typography, dark mode aesthetics, and micro-animations.
 - Seamless mode toggle between traditional text-chat and full hands-free voice mode.
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ```
                                   +---------------------------------------+
@@ -85,7 +85,7 @@ An intelligent, speech-to-speech and text-based **AI Technical Interview System*
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology | Key Role |
 |---|---|---|
@@ -100,7 +100,7 @@ An intelligent, speech-to-speech and text-based **AI Technical Interview System*
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 prem-AI-interviewer/
@@ -153,7 +153,7 @@ prem-AI-interviewer/
 
 ---
 
-## ⚡ Quickstart Guide
+## Quickstart Guide
 
 ### Prerequisites
 - **Python**: 3.10 - 3.12 recommended
@@ -214,7 +214,7 @@ npm run dev
 
 ---
 
-## 📡 API Reference
+## API Reference
 
 ### 1. Start or Continue Interview
 - **Endpoint:** `POST /api/interview`
@@ -270,7 +270,7 @@ npm run dev
 
 ---
 
-## 🎓 Curriculum Coverage (31-Day AI Cohort)
+## Curriculum Coverage (31-Day AI Cohort)
 
 The agent dynamically draws questions across 8 comprehensive modules:
 
@@ -287,7 +287,7 @@ The agent dynamically draws questions across 8 comprehensive modules:
 
 ---
 
-## 🚀 Production Deployment
+## Production Deployment
 
 ### Option A: Single-Service Production Build (FastAPI + Built React)
 
@@ -315,7 +315,7 @@ docker run -p 8000:8000 -e GROQ_API_KEY="your_api_key" prem-ai-interviewer
 
 ---
 
-## 🤝 Project Credits & Hackathon
+## Project Credits & Hackathon
 
 Developed for **Vibecodathon 2026** under the **prem-AI-interviewer** project banner. 
 
@@ -326,6 +326,6 @@ Developed for **Vibecodathon 2026** under the **prem-AI-interviewer** project ba
 
 ---
 
-<p center>
-  <i>Built with ❤️ for AI Engineers & Candidates. Powered by Groq, LangChain & FastAPI.</i>
+<p align="center">
+  <i>Built for AI Engineers & Candidates. Powered by Groq, LangChain & FastAPI.</i>
 </p>
