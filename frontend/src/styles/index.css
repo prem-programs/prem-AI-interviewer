@@ -679,50 +679,54 @@ body {
   background: rgba(15, 23, 42, 0.6);
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
+  overflow: hidden;
 }
 
 .waveform-bar {
-  width: 10px;
+  width: 8px;
+  height: 32px;
   border-radius: 4px;
   background: rgba(148, 163, 184, 0.2);
-  height: 4px;
+  transform: scaleY(0.15);
+  transform-origin: center;
   transition: background 0.3s ease;
+  will-change: transform;
 }
 
 /* Idle — flat bars */
 .css-waveform.idle .waveform-bar {
   animation: none;
-  height: 4px;
+  transform: scaleY(0.15);
   background: rgba(148, 163, 184, 0.2);
 }
 
 /* Listening — amber bouncing bars (mic input visualization) */
 .css-waveform.listening .waveform-bar {
   background: #f59e0b;
-  animation: barBounce 0.7s ease-in-out infinite alternate;
+  animation: barScaleBounce 0.7s ease-in-out infinite alternate;
 }
 
 /* Speaking — blue flowing bars (AI voice visualization) */
 .css-waveform.speaking .waveform-bar {
   background: linear-gradient(to top, #38bdf8, #818cf8);
-  animation: barBounce 0.6s ease-in-out infinite alternate;
+  animation: barScaleBounce 0.6s ease-in-out infinite alternate;
 }
 
 /* Processing — purple pulse */
 .css-waveform.processing .waveform-bar {
   background: #a855f7;
-  animation: barPulse 1.2s ease-in-out infinite;
+  animation: barScalePulse 1.2s ease-in-out infinite;
 }
 
-@keyframes barBounce {
-  0%   { height: 6px;  }
-  25%  { height: 28px; }
-  50%  { height: 14px; }
-  75%  { height: 38px; }
-  100% { height: 10px; }
+@keyframes barScaleBounce {
+  0%   { transform: scaleY(0.15); }
+  25%  { transform: scaleY(0.75); }
+  50%  { transform: scaleY(0.35); }
+  75%  { transform: scaleY(1.0);  }
+  100% { transform: scaleY(0.25); }
 }
 
-@keyframes barPulse {
-  0%, 100% { height: 6px;  opacity: 0.5; }
-  50%       { height: 24px; opacity: 1;   }
+@keyframes barScalePulse {
+  0%, 100% { transform: scaleY(0.15); opacity: 0.5; }
+  50%       { transform: scaleY(0.75); opacity: 1;   }
 }

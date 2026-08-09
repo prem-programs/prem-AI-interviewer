@@ -253,9 +253,7 @@ export default function VoiceInterviewChat({
             disabled={voiceState === 'PROCESSING'}
             className={`mic-btn ${voiceState === 'LISTENING' ? 'active' : ''}`}
             style={voiceState === 'LISTENING' ? {
-              boxShadow: `0 0 ${16 + micVolume * 0.45}px rgba(245, 158, 11, ${0.4 + micVolume * 0.005})`,
-              transform: `scale(${1 + micVolume * 0.0015})`,
-              transition: 'all 0.1s ease-out'
+              boxShadow: `0 0 ${16 + Math.min(30, micVolume * 0.35)}px rgba(245, 158, 11, 0.6)`
             } : {}}
             title={voiceState === 'LISTENING' ? 'Tap to submit answer' : 'Tap to speak'}
           >

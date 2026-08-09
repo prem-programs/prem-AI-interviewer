@@ -30,7 +30,7 @@
 | **Project**        | prem-AI-interviewer                            |
 | **Hackathon**      | Vibecodathon                                   |
 | **Session Date**   | 2026-08-07                                     |
-| **Total Prompts**  | 30 *(updated as session progresses)*           |
+| **Total Prompts**  | 31 *(updated as session progresses)*           |
 | **AI Model**       | Gemini 3.6 Flash (High) via Antigravity         |
 | **Workspace**      | `d:\vibecodathon`                              |
 
@@ -790,9 +790,30 @@ INIT → GREETING → Q1 → EVAL → [FOLLOW_UP | NEXT_TOPIC] → ... → MIN_8
 - [`frontend/src/components/InterviewChat.jsx`](file:///d:/vibecodathon/frontend/src/components/InterviewChat.jsx) — Updated progress denominator and progress bar calculation to `/ 8`.
 - [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 30 session log.
 
+### Prompt 31 — Fix Voice Mode Visual Wobble via GPU ScaleY Transforms & Static Mic Button Position
+
+**🕐 Timestamp:** 2026-08-09 10:16 IST
+
+**👤 User Prompt:**
+> "still voice is wobelling"
+
+**🤖 AI Implementation:**
+1. **Root Cause Analysis**:
+   - The waveform CSS animation (`@keyframes barBounce`) modified the `height` property of `.waveform-bar` on every frame, forcing browser layout reflow and visual jittering/wobbling.
+   - The mic button inline style applied a dynamic `transform: scale(...)` 60 times per second based on raw microphone volume input, causing micro-wobbles around the button container.
+2. **Fixes Applied**:
+   - Refactored `@keyframes barBounce` and `@keyframes barPulse` in [`frontend/src/styles/index.css`](file:///d:/vibecodathon/frontend/src/styles/index.css) to use GPU-accelerated `transform: scaleY(...)` instead of modifying `height`.
+   - Removed dynamic `transform: scale(...)` from the mic button in [`VoiceInterviewChat.jsx`](file:///d:/vibecodathon/frontend/src/components/VoiceInterviewChat.jsx), using pure GPU `boxShadow` volume glow for visual feedback without layout jitter.
+
+**📁 Files Modified:**
+- [`frontend/src/styles/index.css`](file:///d:/vibecodathon/frontend/src/styles/index.css) — Switched waveform bars to GPU `scaleY` transforms.
+- [`frontend/src/components/VoiceInterviewChat.jsx`](file:///d:/vibecodathon/frontend/src/components/VoiceInterviewChat.jsx) — Removed dynamic mic button scale transform.
+- [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 31 session log.
+
 ---
 
-*Last updated: 2026-08-09 10:15 IST · Total prompts logged: 30*
+*Last updated: 2026-08-09 10:16 IST · Total prompts logged: 31*
+
 
 
 
