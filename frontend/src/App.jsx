@@ -37,7 +37,7 @@ export default function App() {
         <div className="brand-logo" onClick={handleSwitchCandidate} style={{ cursor: 'pointer' }}>
           <div className="brand-icon">🤖</div>
           <div>
-            <div className="brand-title">prem AI Interviewer</div>
+            <div className="brand-title">AI Interviewer</div>
             <div className="brand-subtitle">Adaptive Multi-Turn Technical Evaluation Agent</div>
           </div>
         </div>
