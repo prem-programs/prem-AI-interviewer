@@ -24,6 +24,8 @@ class STTService:
     def _get_groq_client(self):
         _load_stt_env()
         api_key = os.environ.get("GROQ_API_KEY")
+        if api_key:
+            api_key = api_key.strip().strip("'").strip('"')
         if api_key and not self.groq_client:
             try:
                 from groq import Groq
@@ -36,6 +38,8 @@ class STTService:
     def _get_openai_client(self):
         _load_stt_env()
         api_key = os.environ.get("OPENAI_API_KEY")
+        if api_key:
+            api_key = api_key.strip().strip("'").strip('"')
         if api_key and not self.openai_client:
             try:
                 from openai import OpenAI

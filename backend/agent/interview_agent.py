@@ -31,6 +31,11 @@ class InterviewAgent:
         groq_api_key = os.getenv("GROQ_API_KEY")
         openai_api_key = os.getenv("OPENAI_API_KEY")
 
+        if groq_api_key:
+            groq_api_key = groq_api_key.strip().strip("'").strip('"')
+        if openai_api_key:
+            openai_api_key = openai_api_key.strip().strip("'").strip('"')
+
         if groq_api_key and not groq_api_key.startswith("your_"):
             try:
                 from langchain_groq import ChatGroq
