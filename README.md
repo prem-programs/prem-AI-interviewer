@@ -1,6 +1,5 @@
 # AI-interviewer — Adaptive Real-Time AI Technical Interviewer
 
-[![Vibecodathon 2026](https://img.shields.io/badge/Hackathon-Vibecodathon%202026-blueviolet?style=for-the-badge)](https://github.com/)
 [![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
 [![Groq Acceleration](https://img.shields.io/badge/LLM-Groq%20LPU%20(LLaMA%203.3%2070B)-orange?style=for-the-badge&logo=groq)](https://groq.com/)
 [![React + Vite](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
