@@ -282,6 +282,19 @@ export function useVoicePipeline({ onTranscriptFinal, initialVoice = 'alba' }) {
 
       const audioUrl = await audioUrlPromises[idx];
       if (!audioUrl || !isSpeakingRef.current) {
+        // Fallback to Web Speech API if backend audio synthesis is null/unavailable
+        if (audioUrl === null && 'speechSynthesis' in window && isSpeakingRef.current) {
+          try {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(sentences[idx]);
+            utterance.onend = () => playNextSentence();
+            utterance.onerror = () => playNextSentence();
+            window.speechSynthesis.speak(utterance);
+            return;
+          } catch (e) {
+            console.warn('[TTS] Web Speech fallback notice:', e);
+          }
+        }
         playNextSentence();
         return;
       }
@@ -301,9 +314,9 @@ export function useVoicePipeline({ onTranscriptFinal, initialVoice = 'alba' }) {
         const playPromise = audio.play();
         if (playPromise !== undefined) {
           playPromise.catch((err) => {
-            console.warn('[TTS] Playback catch notice:', err);
+            console.warn('[TTS] Autoplay blocked notice:', err);
             setAutoplayBlocked(true);
-            playNextSentence();
+            // Preserving activeAudioRef.current allows unlockAudio() to resume this sentence when user taps unlock
           });
         }
       } catch (err) {
@@ -321,7 +334,9 @@ export function useVoicePipeline({ onTranscriptFinal, initialVoice = 'alba' }) {
       activeAudioRef.current.play().then(() => {
         setAutoplayBlocked(false);
         setVoiceState('SPEAKING');
-      }).catch(() => {});
+      }).catch((err) => {
+        console.warn('[TTS] unlockAudio catch:', err);
+      });
     }
   }, []);
 

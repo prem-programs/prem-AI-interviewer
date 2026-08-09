@@ -34,8 +34,12 @@ def synthesize_voice(req: SynthesizeRequest):
         if os.path.exists(custom_voice):
             voice_path = custom_voice
 
-    wav_bytes = tts_service.synthesize_wav(req.text, voice=req.voice, voice_path=voice_path)
-    return Response(content=wav_bytes, media_type="audio/wav")
+    audio_bytes = tts_service.synthesize_wav(req.text, voice=req.voice, voice_path=voice_path)
+    media_type = "audio/wav"
+    if audio_bytes.startswith(b'\xff\xfb') or audio_bytes.startswith(b'ID3') or audio_bytes.startswith(b'\xff\xf3') or audio_bytes.startswith(b'\xff\xf2'):
+        media_type = "audio/mpeg"
+
+    return Response(content=audio_bytes, media_type=media_type)
 
 @voice_router.post("/api/voice/transcribe")
 async def transcribe_audio_file(file: UploadFile = File(...)):

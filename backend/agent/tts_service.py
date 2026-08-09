@@ -10,10 +10,10 @@ class TTSService:
         self._init_pocket_tts()
 
     def _init_pocket_tts(self):
-        # Memory-Optimized Cloud Guard: On 512MB RAM containers (Railway/Render), skip heavy PyTorch weights unless explicitly enabled via ENABLE_POCKET_TTS=true
-        enable_pocket = os.getenv("ENABLE_POCKET_TTS", "false").lower() in ("true", "1", "yes")
+        # Memory-Optimized Cloud Guard: Default ENABLE_POCKET_TTS to "true" locally unless explicitly disabled via ENABLE_POCKET_TTS=false
+        enable_pocket = os.getenv("ENABLE_POCKET_TTS", "true").lower() in ("true", "1", "yes")
         if not enable_pocket:
-            print("[TTS] Memory-Optimized Cloud Mode active (Memory < 70MB). Web Browser TTS active.")
+            print("[TTS] Pocket TTS disabled via ENABLE_POCKET_TTS=false. Real-voice gTTS fallback active.")
             return
 
         try:
@@ -29,11 +29,11 @@ class TTSService:
                 print(f"[TTS] Default voice state load notice: {ve}")
                 self.default_voice_state = {}
         except Exception as e:
-            print(f"[TTS] Pocket TTS init notice: {e}. Web browser TTS / fallback mode active.")
+            print(f"[TTS] Pocket TTS init notice: {e}. Real-voice gTTS fallback active.")
 
     def synthesize_wav(self, text: str, voice: str = None, voice_path: str = None) -> bytes:
         """
-        Synthesizes text into WAV bytes using Pocket TTS if loaded, else fallback generator.
+        Synthesizes text into WAV/MP3 bytes using Pocket TTS if loaded, else real-voice gTTS fallback generator.
         """
         if self.tts is not None:
             try:
@@ -89,12 +89,49 @@ class TTSService:
         Yields PCM audio data chunks for WebSocket streaming.
         """
         wav_bytes = self.synthesize_wav(text, voice_path)
-        # WAV header is 44 bytes; skip it for raw 16-bit PCM streaming
+        # Skip header if present (44 bytes for WAV), yield raw audio frames
         pcm_data = wav_bytes[44:] if len(wav_bytes) > 44 else wav_bytes
         for i in range(0, len(pcm_data), chunk_size):
             yield pcm_data[i:i + chunk_size]
 
     def _generate_fallback_wav(self, text: str) -> bytes:
+        """
+        Fallback voice synthesizer using gTTS (Google Text-To-Speech) or pyttsx3
+        to generate real spoken voice audio instead of synthetic sine tones.
+        """
+        # Primary fallback: gTTS (Google Text-To-Speech)
+        try:
+            from gtts import gTTS
+            tts = gTTS(text=text, lang='en')
+            buf = io.BytesIO()
+            tts.write_to_fp(buf)
+            audio_bytes = buf.getvalue()
+            if audio_bytes and len(audio_bytes) > 100:
+                return audio_bytes
+        except Exception as ge:
+            print(f"[TTS] gTTS fallback notice: {ge}")
+
+        # Secondary fallback: pyttsx3 (SAPI5 / NSSpeech)
+        try:
+            import pyttsx3
+            import tempfile
+            engine = pyttsx3.init()
+            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tf:
+                temp_filename = tf.name
+            engine.save_to_file(text, temp_filename)
+            engine.runAndWait()
+            with open(temp_filename, "rb") as f:
+                audio_bytes = f.read()
+            try:
+                os.unlink(temp_filename)
+            except Exception:
+                pass
+            if audio_bytes and len(audio_bytes) > 44:
+                return audio_bytes
+        except Exception as pe:
+            print(f"[TTS] pyttsx3 fallback notice: {pe}")
+
+        # Tertiary tone fallback if all speech libraries fail
         sample_rate = 24000
         words = text.split() if text else ["Hello"]
         duration_per_word = 0.28
@@ -104,7 +141,7 @@ class TTSService:
         buf = io.BytesIO()
         with wave.open(buf, 'wb') as wav_file:
             wav_file.setnchannels(1)
-            wav_file.setsampwidth(2)  # 16-bit PCM
+            wav_file.setsampwidth(2)
             wav_file.setframerate(sample_rate)
 
             samples = []
@@ -127,3 +164,4 @@ class TTSService:
         return buf.getvalue()
 
 tts_service = TTSService()
+
