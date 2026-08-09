@@ -282,11 +282,11 @@ body {
 /* Chat Interface Layout */
 .chat-container {
   display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 1.5rem;
+  grid-template-columns: 280px 1fr;
+  gap: 1.25rem;
   flex: 1;
-  height: calc(100vh - 120px);
-  max-height: 780px;
+  height: 100%;
+  max-height: 100%;
   min-height: 0;
   overflow: hidden;
 }
@@ -294,9 +294,9 @@ body {
 @media (max-width: 900px) {
   .chat-container {
     grid-template-columns: 1fr;
-    height: auto;
-    max-height: none;
-    overflow: visible;
+    height: 100%;
+    max-height: 100%;
+    overflow-y: auto;
   }
 }
 
@@ -311,7 +311,9 @@ body {
   gap: 1.25rem;
   height: 100%;
   max-height: 100%;
+  min-height: 0;
   overflow-y: auto;
+  flex-shrink: 0;
 }
 
 .chat-main {
@@ -325,10 +327,11 @@ body {
   max-height: 100%;
   min-height: 0;
   overflow: hidden;
+  flex: 1;
 }
 
 .chat-header {
-  padding: 1rem 1.5rem;
+  padding: 0.85rem 1.25rem;
   background: rgba(15, 23, 42, 0.8);
   border-bottom: 1px solid var(--border-subtle);
   display: flex;
@@ -340,7 +343,7 @@ body {
 .chat-messages {
   flex: 1;
   min-height: 0;
-  padding: 1.5rem;
+  padding: 1.25rem;
   overflow-y: auto;
   display: flex;
   flex-direction: column;

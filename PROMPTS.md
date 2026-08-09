@@ -30,7 +30,7 @@
 | **Project**        | prem-AI-interviewer                            |
 | **Hackathon**      | Vibecodathon                                   |
 | **Session Date**   | 2026-08-07                                     |
-| **Total Prompts**  | 4 *(updated as session progresses)*            |
+| **Total Prompts**  | 25 *(updated as session progresses)*           |
 | **AI Model**       | Gemini 3.6 Flash (High) via Antigravity         |
 | **Workspace**      | `d:\vibecodathon`                              |
 
@@ -639,29 +639,69 @@ INIT → GREETING → Q1 → EVAL → [FOLLOW_UP | NEXT_TOPIC] → ... → MIN_8
 
 ---
 
-### Prompt 22 — Auto-Trigger Microphone Listening on Question Completion
+### Prompt 23 — Vercel Backend Connection & Candidate Fallback Handling
 
-**🕐 Timestamp:** 2026-08-08 22:04 IST
+**🕐 Timestamp:** 2026-08-09 09:20 IST
 
 **👤 User Prompt:**
-> "Now after the interviewers question ends direct give the option for speaking for seamless flow of QnA"
+> "still backend is not connect to frontend deployed vercel link of frontend is showing this" (with screenshot showing candidate fetch error)
 
 **🤖 AI Implementation:**
-
-**Feature Delivered:**
-1. **Seamless Automatic Voice Q&A Flow**:
-   - Updated `playTTSAudio()` in [`frontend/src/hooks/useVoicePipeline.js`](file:///d:/vibecodathon/frontend/src/hooks/useVoicePipeline.js).
-   - As soon as the interviewer finishes speaking the question out loud (`audio.onended`), the system automatically invokes `startListeningFn()` after a 300ms natural pause.
-   - The microphone activates directly (`LISTENING` mode: *"🎙️ Listening... speak your answer"*) so the candidate can answer immediately without needing to tap any buttons.
-2. **Verification**: Frontend Vite build passed in 1.60s.
+1. **Root Cause Analysis**: `frontend/vercel.json` specified `https://YOUR-BACKEND-URL.onrender.com/api/:path*`, a placeholder URL.
+2. **Fallback Safety**: Updated [`CandidateSelector.jsx`](file:///d:/vibecodathon/frontend/src/components/CandidateSelector.jsx) to clear red error banners and automatically load candidate fallback profiles if the backend API is unreachable.
+3. **Environment Config**: Documented `VITE_API_BASE_URL` setup for Vercel.
 
 **📁 Files Modified:**
-- [`frontend/src/hooks/useVoicePipeline.js`](file:///d:/vibecodathon/frontend/src/hooks/useVoicePipeline.js) — Auto-triggered microphone recording upon question completion.
-- [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 22 session log.
+- [`frontend/src/components/CandidateSelector.jsx`](file:///d:/vibecodathon/frontend/src/components/CandidateSelector.jsx) — Clear error state and use fallback candidate list on fetch error.
 
 ---
 
-*Last updated: 2026-08-08 22:04 IST · Total prompts: 22*
+### Prompt 24 — Fullstack Deployment Configuration for Railway
+
+**🕐 Timestamp:** 2026-08-09 09:33 IST
+
+**👤 User Prompt:**
+> "ok so iam going to deploy full stack on railway" / "railpack process exited with an error" / "but i don't get any link"
+
+**🤖 AI Implementation:**
+1. **Multi-Stage Dockerfile**: Created [`Dockerfile`](file:///d:/vibecodathon/Dockerfile) to build the React frontend using Node 20 and bundle `dist` static files directly into the Python 3.11 FastAPI backend server.
+2. **Railway Railpack Config**: Created [`nixpacks.toml`](file:///d:/vibecodathon/nixpacks.toml), root [`requirements.txt`](file:///d:/vibecodathon/requirements.txt), and [`Procfile`](file:///d:/vibecodathon/Procfile) to support Nixpacks/Railpack builds with Node 20, Python 3.11, and FFmpeg.
+3. **Health Check & Railway Config**: Created [`railway.json`](file:///d:/vibecodathon/railway.json) with `/api/health` check.
+4. **Networking Guidance**: Provided step-by-step guidance for setting `GROQ_API_KEY` and generating Railway public domain.
+
+**📁 Files Created/Modified:**
+- [`Dockerfile`](file:///d:/vibecodathon/Dockerfile) — Created multi-stage container build.
+- [`nixpacks.toml`](file:///d:/vibecodathon/nixpacks.toml) — Created Nixpacks deployment spec.
+- [`railway.json`](file:///d:/vibecodathon/railway.json) — Created Railway app settings.
+- [`Procfile`](file:///d:/vibecodathon/Procfile) — Created deployment start command.
+- [`requirements.txt`](file:///d:/vibecodathon/requirements.txt) — Created root requirements file.
+- [`.dockerignore`](file:///d:/vibecodathon/.dockerignore) — Excluded build artifacts from container.
+
+---
+
+### Prompt 25 — Fixed Viewport Container Height Layout & Hackathon Prompt Log Synchronization
+
+**🕐 Timestamp:** 2026-08-09 09:51 IST
+
+**👤 User Prompt:**
+> "this is div is expanding make it fixed and also start prompt noting"
+
+**🤖 AI Implementation:**
+1. **Fixed Viewport Layout**:
+   - Updated `app-container`, `chat-container`, `sidebar-panel`, and `chat-main` in [`frontend/src/styles/index.css`](file:///d:/vibecodathon/frontend/src/styles/index.css).
+   - Constrained outer app container to `height: 100vh; overflow: hidden;`.
+   - Prevented vertical expansion of parent divs as message history grows. The message list (`chat-messages`) and sidebar (`sidebar-panel`) now scroll strictly inside fixed viewport boundaries.
+2. **Hackathon Prompt Log Synchronization**:
+   - Recorded Prompts 23, 24, and 25 into [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) with timestamps, root causes, file diffs, and verification steps.
+
+**📁 Files Modified:**
+- [`frontend/src/styles/index.css`](file:///d:/vibecodathon/frontend/src/styles/index.css) — Enforced strict viewport height bounds on chat layout container.
+- [`PROMPTS.md`](file:///d:/vibecodathon/PROMPTS.md) — Updated with Prompt 23, 24, and 25 logs.
+
+---
+
+*Last updated: 2026-08-09 09:52 IST · Total prompts logged: 25*
+
 
 
 
