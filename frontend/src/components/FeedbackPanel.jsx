@@ -18,11 +18,12 @@ export default function FeedbackPanel({ feedback, candidate, onRestart, onSwitch
 
       {/* Summary Box */}
       <div style={{
-        background: 'rgba(56, 189, 248, 0.08)',
-        border: '1px solid var(--border-glow)',
+        background: '#0f172a',
+        border: '1px solid #0369a1',
         borderRadius: 'var(--radius-md)',
         padding: '1.25rem',
-        marginBottom: '1.5rem'
+        marginBottom: '1.5rem',
+        boxShadow: 'var(--shadow-card)'
       }}>
         <h4 style={{ color: 'var(--primary)', fontFamily: 'var(--font-heading)', fontSize: '1rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Award size={18} /> Executive Performance Summary

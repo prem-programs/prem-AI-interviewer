@@ -92,7 +92,7 @@ export function useVoicePipeline({ onTranscriptFinal, initialVoice = 'alba' }) {
 
     setVoiceState('PROCESSING');
     cleanupAudioHardware();
-    setInterimTranscript('Transcribing audio via Whisper...');
+    setInterimTranscript('Processing your voice answer...');
 
     try {
       const formData = new FormData();

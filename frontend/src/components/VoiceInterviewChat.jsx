@@ -115,9 +115,9 @@ export default function VoiceInterviewChat({
     }}>
       {/* ── Left: Voice Stage ── */}
       <div style={{
-        background: 'radial-gradient(circle at 50% 35%, rgba(20,30,55,0.98), rgba(9,13,22,1))',
+        background: '#0f172a',
         border: '1px solid var(--border-subtle)',
-        borderRadius: '16px',
+        borderRadius: 'var(--radius-md)',
         padding: '1.25rem',
         display: 'flex',
         flexDirection: 'column',
@@ -126,7 +126,8 @@ export default function VoiceInterviewChat({
         position: 'relative',
         overflow: 'hidden',
         minHeight: '0',
-        height: '100%'
+        height: '100%',
+        boxShadow: 'var(--shadow-card)'
       }}>
 
         {/* ── Top bar ── */}
@@ -336,12 +337,17 @@ export default function VoiceInterviewChat({
 
       {/* ── Right: Live Transcript Panel ── */}
       <div style={{
-        background:'rgba(15,23,42,0.75)', border:'1px solid var(--border-subtle)',
-        borderRadius:'16px', padding:'1.25rem',
-        display:'flex', flexDirection:'column', height:'100%',
-        maxHeight: '100%', minHeight: '0',
-        backdropFilter:'blur(10px)',
-        overflow: 'hidden'
+        background: '#0f172a',
+        border: '1px solid var(--border-subtle)',
+        borderRadius: 'var(--radius-md)',
+        padding: '1.25rem',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        maxHeight: '100%',
+        minHeight: '0',
+        overflow: 'hidden',
+        boxShadow: 'var(--shadow-card)'
       }}>
         {/* Header */}
         <div style={{

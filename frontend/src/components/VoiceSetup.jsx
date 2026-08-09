@@ -18,7 +18,7 @@ export default function VoiceSetup({ isOpen, onClose, onConfirm }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: "Hello! I am your AI technical interviewer powered by Pocket TTS. Let's begin your evaluation.",
+          text: "Hello! I am your AI technical interviewer. Let's begin your evaluation.",
           voice: selectedVoiceId
         })
       });
@@ -42,8 +42,8 @@ export default function VoiceSetup({ isOpen, onClose, onConfirm }) {
 
   return (
     <div style={{
-      position:'fixed', inset:0, background:'rgba(9,13,22,0.88)',
-      backdropFilter:'blur(10px)', display:'flex',
+      position:'fixed', inset:0, background:'rgba(9,13,22,0.92)',
+      display:'flex',
       alignItems:'center', justifyContent:'center', zIndex:1000, padding:'1rem'
     }}>
       <div style={{
@@ -71,7 +71,7 @@ export default function VoiceSetup({ isOpen, onClose, onConfirm }) {
           <div>
             <h3 style={{ fontSize:'1.15rem', fontWeight:700, margin:0 }}>Voice Mode Setup</h3>
             <p style={{ fontSize:'0.8rem', color:'var(--text-muted)', margin:0 }}>
-              Kyutai Pocket TTS Speech-to-Speech AI
+              Interactive Speech-to-Speech Experience
             </p>
           </div>
         </div>
@@ -97,18 +97,18 @@ export default function VoiceSetup({ isOpen, onClose, onConfirm }) {
           <div style={{ fontWeight:600, color:'var(--primary)', marginBottom:'0.4rem' }}>How it works</div>
           <Mic size={14} style={{ display:'inline', verticalAlign:'-2px', marginRight:6, color:'#38bdf8' }}/> <strong style={{color:'#f8fafc'}}>Tap the mic</strong> → speak your answer<br/>
           <Brain size={14} style={{ display:'inline', verticalAlign:'-2px', marginRight:6, color:'#a855f7' }}/> AI evaluates &amp; generates the technical question<br/>
-          <Volume2 size={14} style={{ display:'inline', verticalAlign:'-2px', marginRight:6, color:'#38bdf8' }}/> <strong style={{color:'#f8fafc'}}>Pocket TTS speaks</strong> the question aloud
+          <Volume2 size={14} style={{ display:'inline', verticalAlign:'-2px', marginRight:6, color:'#38bdf8' }}/> <strong style={{color:'#f8fafc'}}>AI Interviewer speaks</strong> the question aloud
         </div>
 
-        {/* ── Pocket TTS Voice Selection ── */}
+        {/* ── Voice Persona Selection ── */}
         <div style={{
           background:'rgba(30,41,59,0.6)', border:'1px solid rgba(255,255,255,0.07)',
           borderRadius:'12px', padding:'1rem', marginBottom:'1rem'
         }}>
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'0.65rem' }}>
             <div>
-              <div style={{ fontWeight:600, fontSize:'0.9rem' }}>Pocket TTS Neural Models</div>
-              <div style={{ fontSize:'0.75rem', color:'var(--text-muted)' }}>PyTorch Kyutai TTS engine on CPU</div>
+              <div style={{ fontWeight:600, fontSize:'0.9rem' }}>Interviewer Voice Persona</div>
+              <div style={{ fontSize:'0.75rem', color:'var(--text-muted)' }}>Choose your preferred AI voice style</div>
             </div>
             <button
               onClick={handlePreview}
@@ -148,7 +148,7 @@ export default function VoiceSetup({ isOpen, onClose, onConfirm }) {
             display:'flex', alignItems:'center', gap:'0.35rem'
           }}>
             <Zap size={11} color="#f59e0b"/>
-            PyTorch Pocket TTS model (24kHz WAV, zero external web APIs)
+            High-definition natural voice audio
           </div>
         </div>
 

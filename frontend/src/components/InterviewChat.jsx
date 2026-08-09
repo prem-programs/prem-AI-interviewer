@@ -205,31 +205,34 @@ export default function InterviewChat({ candidate, onBackToCandidates, onIntervi
         <button
           onClick={onBackToCandidates}
           style={{
-            background: 'none',
-            border: 'none',
+            background: '#0f172a',
+            border: '1px solid var(--border-subtle)',
             color: 'var(--text-muted)',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             gap: '0.4rem',
-            fontSize: '0.85rem',
+            fontSize: '0.82rem',
+            fontWeight: 600,
+            padding: '0.45rem 0.75rem',
+            borderRadius: '6px',
             flexShrink: 0
           }}
         >
-          <ChevronLeft size={16} /> Back to Candidates
+          <ChevronLeft size={15} /> Back to Candidates
         </button>
 
-        <div style={{ padding: '0.75rem', background: 'rgba(15, 23, 42, 0.6)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)', flexShrink: 0 }}>
+        <div style={{ padding: '0.85rem', background: '#0f172a', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)', flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-            <div className="candidate-avatar" style={{ width: 40, height: 40, fontSize: '0.95rem' }}>
+            <div className="candidate-avatar" style={{ width: 38, height: 38, fontSize: '0.9rem' }}>
               {candidate.member.name.split(' ').map(n => n[0]).join('')}
             </div>
-            <div>
-              <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>{candidate.member.name}</div>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div style={{ fontWeight: 600, fontSize: '0.92rem', color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{candidate.member.name}</div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{candidate.member.jobRole}</div>
             </div>
           </div>
-          <div style={{ marginTop: '0.5rem' }}>
+          <div style={{ marginTop: '0.4rem' }}>
             <span className={`tier-badge ${getTierClass(meta.depthTier)}`}>
               {meta.depthTier} Tier
             </span>
@@ -237,34 +240,72 @@ export default function InterviewChat({ candidate, onBackToCandidates, onIntervi
         </div>
 
         {/* Progress Tracker */}
-        <div style={{ flexShrink: 0 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: '0.4rem' }}>
-            <span style={{ color: 'var(--text-muted)' }}>Main Questions</span>
-            <span style={{ fontWeight: 700, color: 'var(--primary)' }}>{currentMainQ} / 8</span>
+        <div style={{ flexShrink: 0, background: '#0f172a', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', marginBottom: '0.4rem' }}>
+            <span style={{ color: 'var(--text-muted)' }}>Interview Progression</span>
+            <strong style={{ color: 'var(--primary)' }}>Q{currentMainQ}/8</strong>
           </div>
-          <div style={{ height: 6, background: 'rgba(255,255,255,0.1)', borderRadius: 3, overflow: 'hidden' }}>
+          <div style={{ height: 6, background: '#1e293b', borderRadius: 3, overflow: 'hidden' }}>
             <div
               style={{
                 width: `${Math.min((currentMainQ / 8) * 100, 100)}%`,
                 height: '100%',
-                background: 'linear-gradient(90deg, var(--primary), var(--secondary))',
+                background: 'linear-gradient(90deg, #0284c7, #38bdf8)',
                 transition: 'width 0.3s ease'
               }}
             />
           </div>
         </div>
 
-        {/* Modules Covered List */}
+        {/* 8-Module Step Progress Tracker */}
         <div style={{ flex: 1, minHeight: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem', flexShrink: 0 }}>
-            Modules Covered ({meta.topicsCovered?.length || 0}/8)
+          <div style={{ fontSize: '0.76rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '0.45rem', textTransform: 'uppercase', letterSpacing: '0.5px', flexShrink: 0 }}>
+            Module Roadmap ({meta.topicsCovered?.length || 0}/8)
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', flex: 1, minHeight: 0, overflowY: 'auto', paddingRight: '0.2rem' }}>
-            {meta.topicsCovered?.map((topic, i) => (
-              <div key={i} style={{ fontSize: '0.78rem', background: 'rgba(56, 189, 248, 0.1)', padding: '0.35rem 0.6rem', borderRadius: 6, color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '0.4rem', flexShrink: 0 }}>
-                <CheckCircle2 size={13} /> {topic}
-              </div>
-            ))}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', flex: 1, minHeight: 0, overflowY: 'auto', paddingRight: '0.2rem' }}>
+            {[
+              "Environment & Tooling",
+              "Data Foundations",
+              "Embeddings & Vector Search",
+              "LLM Core & Prompting",
+              "Chatbot Application Build",
+              "Agentic AI & MCP Protocol",
+              "Evaluation & Security",
+              "Capstone Assessment"
+            ].map((modTitle, idx) => {
+              const isCovered = meta.topicsCovered?.includes(modTitle) || idx < (meta.topicsCovered?.length || 0);
+              const isActive = idx === (meta.topicsCovered?.length || 0);
+              
+              return (
+                <div
+                  key={idx}
+                  style={{
+                    fontSize: '0.75rem',
+                    background: isCovered ? '#052e16' : isActive ? '#0c4a6e' : '#0f172a',
+                    border: `1px solid ${isCovered ? '#15803d' : isActive ? '#0284c7' : '#1e293b'}`,
+                    padding: '0.4rem 0.6rem',
+                    borderRadius: 6,
+                    color: isCovered ? '#4ade80' : isActive ? '#38bdf8' : 'var(--text-subtle)',
+                    fontWeight: isActive || isCovered ? 600 : 400,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.45rem',
+                    flexShrink: 0
+                  }}
+                >
+                  {isCovered ? (
+                    <CheckCircle2 size={13} style={{ flexShrink: 0 }} />
+                  ) : isActive ? (
+                    <Sparkles size={13} style={{ flexShrink: 0 }} className="pulse-dot" />
+                  ) : (
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#334155', flexShrink: 0 }} />
+                  )}
+                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {idx + 1}. {modTitle}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -273,22 +314,22 @@ export default function InterviewChat({ candidate, onBackToCandidates, onIntervi
           disabled={loading}
           style={{
             flexShrink: 0,
-            marginTop: '0.75rem',
-            background: 'rgba(244, 63, 94, 0.15)',
-            border: '1px solid rgba(244, 63, 94, 0.4)',
+            marginTop: '0.5rem',
+            background: 'rgba(244, 63, 94, 0.12)',
+            border: '1px solid rgba(244, 63, 94, 0.35)',
             color: 'var(--accent-rose)',
-            padding: '0.65rem 1rem',
+            padding: '0.55rem 0.85rem',
             borderRadius: 'var(--radius-sm)',
-            cursor: 'pointer',
+            cursor: loading ? 'not-allowed' : 'pointer',
             fontWeight: 600,
-            fontSize: '0.82rem',
+            fontSize: '0.8rem',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '0.5rem'
+            gap: '0.4rem'
           }}
         >
-          <Flag size={14} /> Finish & Evaluate
+          <Flag size={13} /> Finish &amp; Evaluate
         </button>
       </div>
 
