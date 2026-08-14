@@ -23,13 +23,15 @@ load_dotenv()
 try:
     from backend.router import router
     from backend.voice_router import voice_router
+    from backend.poll_router import router as poll_router
 except ModuleNotFoundError:
     from router import router
     from voice_router import voice_router
+    from poll_router import router as poll_router
 
 app = FastAPI(
-    title="AI Technical Interview Agent",
-    description="Adaptive multi-turn AI interview system for 31-day AI Cohort graduates",
+    title="Poll Pulse & Technical Agent API",
+    description="Live Poll Creator, Real-time Voting Engine & Multi-turn Evaluation",
     version="1.0.0"
 )
 
@@ -44,6 +46,7 @@ app.add_middleware(
 
 app.include_router(router)
 app.include_router(voice_router)
+app.include_router(poll_router)
 
 # Serve built React frontend if dist directory exists (for single-service production deployment)
 frontend_dist = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend", "dist")
