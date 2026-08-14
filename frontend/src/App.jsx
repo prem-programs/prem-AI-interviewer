@@ -375,12 +375,12 @@ export default function App() {
         </div>
       </header>
 
-      {/* Main Stage */}
+      {/* Main Stage with Smooth Animation Transitions */}
       <main style={{ flex: 1, padding: '2rem 1.5rem', maxWidth: '1140px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
         
         {/* ================= MODE 1: POLL PULSE ================= */}
         {appMode === 'POLL_PULSE' && (
-          <>
+          <div key={`poll-mode-${viewMode}`} className="page-transition-wrapper">
             {/* VIEW 1: EXPLORE HUB */}
             {viewMode === 'HUB' && (
               <PollDashboard
@@ -398,7 +398,7 @@ export default function App() {
 
             {/* VIEW 2: ACTIVE STUDIO (VOTE / RESULTS) */}
             {viewMode === 'STUDIO' && activePoll && (
-              <div>
+              <div key={`studio-${studioSubMode}`} className="tab-transition-wrapper">
                 <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
                   <div className="nav-pills" style={{ padding: '6px' }}>
                     <button
@@ -450,12 +450,12 @@ export default function App() {
             {viewMode === 'ANALYTICS' && (
               <PollAnalytics polls={polls} />
             )}
-          </>
+          </div>
         )}
 
         {/* ================= MODE 2: AI TECHNICAL INTERVIEWER ================= */}
         {appMode === 'AI_INTERVIEWER' && (
-          <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          <div key={`ai-mode-${interviewStage}`} className="page-transition-wrapper" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             {interviewStage === 'SELECT_CANDIDATE' && (
               <CandidateSelector onSelectCandidate={handleSelectCandidate} />
             )}
