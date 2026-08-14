@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { BarChart3, Vote, Plus, Sparkles, PieChart, Share2, Copy, Bot, ArrowRight, Layers } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  BarChart3, Vote, Plus, Sparkles, PieChart, Share2, Copy, Bot, 
+  ChevronDown, LayoutGrid, Check, Activity, Layers, BarChart2
+} from 'lucide-react';
 import CandidateSelector from './components/CandidateSelector';
 import InterviewChat from './components/InterviewChat';
 import FeedbackPanel from './components/FeedbackPanel';
@@ -63,9 +66,22 @@ const INITIAL_POLLS = [
 export default function App() {
   // Main Suite Mode Switcher: 'POLL_PULSE' or 'AI_INTERVIEWER'
   const [appMode, setAppMode] = useState('POLL_PULSE');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // --- AI Interviewer App State ---
-  const [interviewStage, setInterviewStage] = useState('SELECT_CANDIDATE'); // SELECT_CANDIDATE | INTERVIEW_ACTIVE | FEEDBACK_VIEW
+  const [interviewStage, setInterviewStage] = useState('SELECT_CANDIDATE');
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [feedback, setFeedback] = useState(null);
 
@@ -94,7 +110,7 @@ export default function App() {
   // --- Poll Pulse App State ---
   const [polls, setPolls] = useState(INITIAL_POLLS);
   const [activePollId, setActivePollId] = useState('poll-1');
-  const [viewMode, setViewMode] = useState('STUDIO'); // 'HUB' | 'STUDIO' | 'CREATE' | 'ANALYTICS'
+  const [viewMode, setViewMode] = useState('HUB'); // 'HUB' | 'STUDIO' | 'CREATE' | 'ANALYTICS'
   const [studioSubMode, setStudioSubMode] = useState('RESULTS'); // 'VOTE' | 'RESULTS'
   const [userVotes, setUserVotes] = useState({});
   const [toastMessage, setToastMessage] = useState('');
@@ -229,105 +245,133 @@ export default function App() {
 
   return (
     <div className="poll-app-container">
-      {/* Top Application Selector Header Bar */}
-      <header className="poll-header" style={{ padding: '0.85rem 1.5rem', background: '#090d16' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-          {/* Main App Brand / Switcher */}
-          <div className="poll-brand" onClick={() => setAppMode(appMode === 'POLL_PULSE' ? 'AI_INTERVIEWER' : 'POLL_PULSE')}>
-            <div className="poll-brand-logo" style={{ background: appMode === 'POLL_PULSE' ? 'linear-gradient(135deg, #38bdf8, #6366f1)' : 'linear-gradient(135deg, #a855f7, #ec4899)' }}>
-              {appMode === 'POLL_PULSE' ? <BarChart3 size={22} /> : <Bot size={22} />}
-            </div>
-            <div>
-              <div className="poll-brand-title">
-                {appMode === 'POLL_PULSE' ? 'Poll Pulse Studio' : 'AI Technical Interviewer'}
-              </div>
-              <div className="poll-brand-tag">
-                {appMode === 'POLL_PULSE' ? 'Live Poll Creator & Real-Time Results' : 'Adaptive Multi-Turn Evaluation Agent'}
-              </div>
-            </div>
-          </div>
-
-          {/* App Switcher Button */}
+      {/* Sleek Minimalist Header Bar */}
+      <header className="poll-header-clean">
+        {/* Left: Brand + Interactive App Switcher Dropdown */}
+        <div style={{ position: 'relative' }} ref={dropdownRef}>
           <button
-            onClick={() => setAppMode(appMode === 'POLL_PULSE' ? 'AI_INTERVIEWER' : 'POLL_PULSE')}
-            style={{
-              background: 'rgba(255, 255, 255, 0.08)',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              color: '#f8fafc',
-              padding: '0.45rem 0.85rem',
-              borderRadius: '9999px',
-              fontSize: '0.78rem',
-              fontWeight: 700,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              transition: 'all 0.2s ease'
-            }}
+            className="brand-dropdown-btn"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
-            <Layers size={14} color="#38bdf8" />
-            Switch to {appMode === 'POLL_PULSE' ? 'AI Interviewer' : 'Poll Pulse'}
+            <div className="brand-icon-box">
+              {appMode === 'POLL_PULSE' ? <BarChart3 size={20} /> : <Bot size={20} />}
+            </div>
+            <div className="brand-text-wrapper">
+              <span className="brand-title">
+                {appMode === 'POLL_PULSE' ? 'Poll Pulse' : 'AI Interviewer'}
+              </span>
+              <span className="brand-subtitle-badge">
+                {appMode === 'POLL_PULSE' ? 'Live Prototype' : 'Evaluation Engine'}
+              </span>
+            </div>
+            <ChevronDown size={16} className={`chevron-icon ${isDropdownOpen ? 'open' : ''}`} />
           </button>
+
+          {/* App Switcher Dropdown Menu */}
+          {isDropdownOpen && (
+            <div className="app-dropdown-menu">
+              <div className="dropdown-label">Select Application</div>
+              
+              <div
+                className={`dropdown-item ${appMode === 'POLL_PULSE' ? 'active' : ''}`}
+                onClick={() => {
+                  setAppMode('POLL_PULSE');
+                  setIsDropdownOpen(false);
+                }}
+              >
+                <div className="dropdown-item-icon poll">
+                  <BarChart3 size={18} />
+                </div>
+                <div>
+                  <div className="dropdown-item-title">Poll Pulse Studio</div>
+                  <div className="dropdown-item-desc">Poll Creator & Live Animated Results</div>
+                </div>
+                {appMode === 'POLL_PULSE' && <Check size={16} color="#38bdf8" style={{ marginLeft: 'auto' }} />}
+              </div>
+
+              <div
+                className={`dropdown-item ${appMode === 'AI_INTERVIEWER' ? 'active' : ''}`}
+                onClick={() => {
+                  setAppMode('AI_INTERVIEWER');
+                  setIsDropdownOpen(false);
+                }}
+              >
+                <div className="dropdown-item-icon ai">
+                  <Bot size={18} />
+                </div>
+                <div>
+                  <div className="dropdown-item-title">AI Technical Interviewer</div>
+                  <div className="dropdown-item-desc">Multi-Turn Adaptive Interview Agent</div>
+                </div>
+                {appMode === 'AI_INTERVIEWER' && <Check size={16} color="#a855f7" style={{ marginLeft: 'auto' }} />}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Dynamic Nav Pills per App Mode */}
+        {/* Center: Streamlined Clean Navigation Pills (3 focused tabs) */}
         {appMode === 'POLL_PULSE' ? (
-          <div className="nav-pills">
+          <div className="clean-nav-pills">
             <button
-              className={`nav-pill ${viewMode === 'HUB' ? 'active' : ''}`}
+              className={`clean-nav-pill ${viewMode === 'HUB' ? 'active' : ''}`}
               onClick={() => setViewMode('HUB')}
             >
-              Explore Hub
+              <LayoutGrid size={15} /> Explore Hub
             </button>
             <button
-              className={`nav-pill ${viewMode === 'STUDIO' ? 'active' : ''}`}
+              className={`clean-nav-pill ${viewMode === 'STUDIO' ? 'active' : ''}`}
               onClick={() => setViewMode('STUDIO')}
             >
-              Active Studio
+              <BarChart2 size={15} /> Live Studio
             </button>
             <button
-              className={`nav-pill ${viewMode === 'CREATE' ? 'active' : ''}`}
-              onClick={() => setViewMode('CREATE')}
-            >
-              <Plus size={14} /> Create Poll
-            </button>
-            <button
-              className={`nav-pill ${viewMode === 'ANALYTICS' ? 'active' : ''}`}
+              className={`clean-nav-pill ${viewMode === 'ANALYTICS' ? 'active' : ''}`}
               onClick={() => setViewMode('ANALYTICS')}
             >
-              <PieChart size={14} /> Analytics
+              <PieChart size={15} /> Analytics
             </button>
           </div>
         ) : (
-          <div className="nav-pills">
+          <div className="clean-nav-pills">
             <button
-              className={`nav-pill ${interviewStage === 'SELECT_CANDIDATE' ? 'active' : ''}`}
+              className={`clean-nav-pill ${interviewStage === 'SELECT_CANDIDATE' ? 'active' : ''}`}
               onClick={handleSwitchCandidate}
             >
-              Candidates List
+              Candidates
             </button>
             {selectedCandidate && (
               <button
-                className={`nav-pill ${interviewStage === 'INTERVIEW_ACTIVE' ? 'active' : ''}`}
+                className={`clean-nav-pill ${interviewStage === 'INTERVIEW_ACTIVE' ? 'active' : ''}`}
                 onClick={() => setInterviewStage('INTERVIEW_ACTIVE')}
               >
-                Active Chat ({selectedCandidate.name})
+                Interview Chat
               </button>
             )}
             {feedback && (
               <button
-                className={`nav-pill ${interviewStage === 'FEEDBACK_VIEW' ? 'active' : ''}`}
+                className={`clean-nav-pill ${interviewStage === 'FEEDBACK_VIEW' ? 'active' : ''}`}
                 onClick={() => setInterviewStage('FEEDBACK_VIEW')}
               >
-                Evaluation Report
+                Report
               </button>
             )}
           </div>
         )}
 
-        {/* Status Badge */}
-        <div className="live-pulse-badge">
-          <span className="pulse-dot" /> LIVE SYNC ACTIVE
+        {/* Right: Quick Action Button & Compact Status */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+          {appMode === 'POLL_PULSE' && (
+            <button
+              className="btn-header-create"
+              onClick={() => setViewMode('CREATE')}
+            >
+              <Plus size={16} /> New Poll
+            </button>
+          )}
+
+          <div className="compact-live-badge">
+            <span className="pulse-dot" /> Live
+          </div>
         </div>
       </header>
 
