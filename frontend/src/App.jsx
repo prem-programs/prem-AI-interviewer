@@ -332,47 +332,33 @@ export default function App() {
             </button>
           </div>
         ) : (
-          <div className="clean-nav-pills">
-            <button
-              className={`clean-nav-pill ${interviewStage === 'SELECT_CANDIDATE' ? 'active' : ''}`}
-              onClick={handleSwitchCandidate}
-            >
-              Candidates
-            </button>
-            {selectedCandidate && (
+          (selectedCandidate || feedback) ? (
+            <div className="clean-nav-pills">
               <button
-                className={`clean-nav-pill ${interviewStage === 'INTERVIEW_ACTIVE' ? 'active' : ''}`}
-                onClick={() => setInterviewStage('INTERVIEW_ACTIVE')}
+                className={`clean-nav-pill ${interviewStage === 'SELECT_CANDIDATE' ? 'active' : ''}`}
+                onClick={handleSwitchCandidate}
               >
-                Interview Chat
+                Candidate List
               </button>
-            )}
-            {feedback && (
-              <button
-                className={`clean-nav-pill ${interviewStage === 'FEEDBACK_VIEW' ? 'active' : ''}`}
-                onClick={() => setInterviewStage('FEEDBACK_VIEW')}
-              >
-                Report
-              </button>
-            )}
-          </div>
+              {selectedCandidate && (
+                <button
+                  className={`clean-nav-pill ${interviewStage === 'INTERVIEW_ACTIVE' ? 'active' : ''}`}
+                  onClick={() => setInterviewStage('INTERVIEW_ACTIVE')}
+                >
+                  Interview Chat
+                </button>
+              )}
+              {feedback && (
+                <button
+                  className={`clean-nav-pill ${interviewStage === 'FEEDBACK_VIEW' ? 'active' : ''}`}
+                  onClick={() => setInterviewStage('FEEDBACK_VIEW')}
+                >
+                  Report
+                </button>
+              )}
+            </div>
+          ) : null
         )}
-
-        {/* Right: Quick Action Button & Compact Status */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-          {appMode === 'POLL_PULSE' && (
-            <button
-              className="btn-header-create"
-              onClick={() => setViewMode('CREATE')}
-            >
-              <Plus size={16} /> New Poll
-            </button>
-          )}
-
-          <div className="compact-live-badge">
-            <span className="pulse-dot" /> Live
-          </div>
-        </div>
       </header>
 
       {/* Main Stage with Smooth Animation Transitions */}
